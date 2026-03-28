@@ -1,315 +1,653 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>三星堆数字博物馆 - 首页改版</title>
+    <title>三星堆数字博物馆</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "Microsoft Yahei", sans-serif;
-        }
-
-        body {
-            background: #050812;
-            color: #e6d7b9;
-            overflow-x: hidden;
-        }
-
-        /* 数字化科技代码风边框容器 核心设计 */
-        .digital-border-wrap {
-            margin: 30px auto;
-            width: 92%;
-            max-width: 1400px;
+        /* 数字化体验代码边框（仅新增） */
+        .digital-code-border {
             position: relative;
-            /* 双层霓虹数字化边框 */
-            border: 1px solid rgba(74, 222, 255, 0.3);
-            padding: 4px;
-            background: linear-gradient(135deg, rgba(20,30,50,0.9), rgba(8,12,25,0.95));
-            border-radius: 12px;
-            /* 光影动画 */
-            box-shadow: 
-                0 0 15px rgba(74, 222, 255, 0.2),
-                inset 0 0 20px rgba(255, 215, 0, 0.08);
+            border: 2px solid #D4AF37;
+            border-radius: 8px;
+            padding: 2px;
+            margin-bottom: 20px;
         }
 
-        /* 四角代码切割装饰 数字化棱角 */
-        .digital-border-wrap::before,
-        .digital-border-wrap::after {
+        .digital-code-border::before,
+        .digital-code-border::after {
             content: "";
             position: absolute;
-            width: 60px;
-            height: 60px;
-            border: 2px solid #4adeff;
-            border-radius: 4px;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #D4AF37;
+            border-radius: 2px;
         }
-        .digital-border-wrap::before {
+
+        .digital-code-border::before {
             top: -2px;
             left: -2px;
             border-right: none;
             border-bottom: none;
         }
-        .digital-border-wrap::after {
+
+        .digital-code-border::after {
             bottom: -2px;
             right: -2px;
             border-left: none;
             border-top: none;
         }
 
-        /* 动态扫描代码流光动画 */
-        .scan-light {
+        .scan-line {
             position: absolute;
             top: 0;
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(74,222,255,0.15), transparent);
-            animation: scanMove 6s infinite linear;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.15), transparent);
+            animation: scan 6s infinite linear;
+            z-index: 0;
         }
-        @keyframes scanMove {
+
+        @keyframes scan {
             0% { left: -100%; }
             100% { left: 100%; }
         }
 
-        /* 导航栏 - 内嵌数字化边框 */
-        header {
-            position: relative;
-            z-index: 2;
-            padding: 20px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(74,222,255,0.2);
-        }
-
-        .logo {
-            font-size: 28px;
-            font-weight: bold;
-            color: #ffd700;
-            text-shadow: 0 0 8px rgba(255,215,0,0.5);
-        }
-
-        nav ul {
-            display: flex;
-            gap: 35px;
-            list-style: none;
-        }
-
-        nav a {
-            color: #c9d8f0;
-            text-decoration: none;
-            font-size: 16px;
-            padding: 8px 12px;
-            border: 1px solid transparent;
-            transition: all 0.3s ease;
-        }
-
-        nav a:hover {
-            border: 1px solid rgba(74,222,255,0.4);
-            color: #4adeff;
-            box-shadow: 0 0 10px rgba(74,222,255,0.2);
-        }
-
-        /* 首页Banner 核心数字化视觉区 */
-        .banner {
-            height: 520px;
-            background: url('https://img0.baidu.com/it/u=123456,789012&fm=253&fmt=auto&app=138&f=JPEG?w=800&h=400') center/cover no-repeat;
-            position: relative;
+        /* 返回顶部按钮样式 */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #b89b7d, #8b5a2b);
+            color: #e8dfc8;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            text-align: center;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        .banner-mask {
-            position: absolute;
-            inset: 0;
-            background: rgba(5,8,18,0.75);
-        }
-
-        .banner-text {
-            position: relative;
-            z-index: 3;
-        }
-
-        .banner-text h1 {
-            font-size: 48px;
-            color: #ffd700;
-            margin-bottom: 20px;
-            letter-spacing: 6px;
-            text-shadow: 0 0 12px rgba(255,215,0,0.4);
-        }
-
-        .banner-text p {
-            font-size: 18px;
-            color: #e6d7b9;
-            max-width: 700px;
-            margin: 0 auto 30px;
-            line-height: 1.8;
-        }
-
-        .digital-btn {
-            padding: 14px 36px;
-            border: 1px solid #4adeff;
-            background: transparent;
-            color: #4adeff;
-            font-size: 17px;
-            border-radius: 6px;
+            font-size: 1.5rem;
             cursor: pointer;
-            transition: 0.3s;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 9999;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(212, 175, 55, 0.5);
         }
 
-        .digital-btn:hover {
-            background: rgba(74,222,255,0.15);
-            box-shadow: 0 0 18px rgba(74,222,255,0.35);
+        .back-to-top.active {
+            opacity: 1;
+            visibility: visible;
         }
 
-        /* 文物展区 模块化数字化卡片边框 */
-        .relic-section {
-            padding: 60px 40px;
+        .back-to-top:hover {
+            background: linear-gradient(135deg, #d4af37, #b89b7d);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
         }
 
-        .section-title {
-            text-align: center;
-            font-size: 32px;
-            color: #ffd700;
-            margin-bottom: 50px;
+        /* 平滑滚动 */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* 你原来的全部CSS开始 */
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        ol,
+        ul {
+            list-style-type: none;
+        }
+
+        a {
+            color: #D9D207 !important;
+            text-decoration: none !important;
+        }
+
+        body {
+            background-color: #1D4700 !important;
+        }
+
+        .custom-shape-divider-top-1703553098 {
             position: relative;
-        }
-
-        .section-title::after {
-            content: "";
-            width: 100px;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #4adeff, transparent);
-            position: absolute;
-            bottom: -12px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .relic-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
-        }
-
-        /* 单张文物 代码风卡片边框 */
-        .relic-card {
-            background: rgba(10,15,30,0.8);
-            border: 1px solid rgba(74,222,255,0.25);
-            border-radius: 10px;
-            overflow: hidden;
-            transition: all 0.4s ease;
-            position: relative;
-        }
-
-        .relic-card:hover {
-            transform: translateY(-8px);
-            border-color: rgba(74,222,255,0.6);
-            box-shadow: 0 10px 30px rgba(74,222,255,0.2);
-        }
-
-        .relic-card img {
+            top: 0px;
+            left: 0;
             width: 100%;
-            height: 240px;
-            object-fit: cover;
+            overflow: hidden;
+            line-height: 0;
+            z-index: 100;
         }
 
-        .relic-info {
-            padding: 20px;
-            border-top: 1px solid rgba(74,222,255,0.15);
+        .custom-shape-divider-top-1703553098 svg {
+            position: relative;
+            display: red;
+            width: calc(100% + 1.3px);
+            height: 60px;
+            transform: rotateY(180deg);
+            z-index: 100;
         }
 
-        .relic-info h3 {
-            color: #ffd700;
-            font-size: 20px;
-            margin-bottom: 10px;
+        .custom-shape-divider-top-1703553098 .shape-fill {
+            fill: #1D4700;
+            z-index: 100;
         }
 
-        .relic-info p {
-            color: #b8c6e0;
-            font-size: 14px;
-            line-height: 1.7;
+        .nav {
+            width: 100%;
+            background-color: #1D4700;
+            height: 100px;
+            top: 0px;
+            position: relative;
+            z-index: 100;
         }
 
-        footer {
+        .nav ul {
+            position: relative;
+            height: 100px;
+            padding: 0 15%;
+        }
+
+        .nav li {
+            width: 150px;
+            height: 100px;
+            line-height: 100px;
             text-align: center;
-            padding: 30px;
-            border-top: 1px solid rgba(74,222,255,0.2);
-            color: #8997b3;
-            margin-top: 40px;
+            border-radius: 20px;
+            position: absolute;
+            top: 0;
+        }
+
+        .nav li:nth-child(3) {
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            width: auto !important;
+            min-width: 200px;
+            background: rgba(0,0,0,0.2);
+        }
+
+        .nav li:nth-child(1) {
+            left: 15%;
+        }
+
+        .nav li:nth-child(2) {
+            left: calc(15% + 250px);
+        }
+
+        .nav li:nth-child(4) {
+            right: calc(15% + 250px);
+        }
+
+        .nav li:nth-child(5) {
+            right: 15%;
+        }
+
+        .nav li a {
+            font-family: 'Noto Serif SC', '思源宋体', serif;
+            font-weight: 700;
+            font-size: 23px;
+            letter-spacing: 2px;
+            color: #D4AF37 !important;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+            display: block;
+            width: 100%;
+            height: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .nav li:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: scale(1.05);
+        }
+
+        .nav li a:hover {
+            color: #C04848 !important;
+            font-weight: 900;
+            font-size: 20px;
+        }
+
+        .nav li a.active {
+            color: #C04848 !important;
+            border-bottom: 3px solid #D4AF37;
+        }
+
+        @keyframes box {
+            0% { transform: rotate(0deg); }
+            33% { transform: rotate(8deg); }
+            66% { transform: rotate(-8deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        #carouselExampleCaptions {
+            position: relative;
+            background-color: black;
+            top: -10px;
+            width: 100%;
+            height: 700px;
+            margin: 200px auto;
+        }
+
+        .carousel-control-prev,
+        .carousel-control-next {
+            width: 60px;
+        }
+
+        .carousel-inner {
+            width: 100%;
+            height: 700px;
+        }
+
+        .content-slp {
+            position: absolute;
+            top: 100px;
+            width: 100%;
+            background-color: rgb(255, 179, 179);
+            transform-origin: 30% 40%;
+        }
+
+        .container {
+            position: relative;
+            height: 600px;
+            margin: 30px auto 0 !important;
+            background-color: rgb(220, 210, 198);
+        }
+
+        .dv {
+            width: 1140px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 650px auto 30px !important;
+            height: 200px;
+            top: 600px;
+            position: static !important;
+            background-color: rgb(220, 210, 198);
+            background-size: 400px 350px;
+            background-image: url(../images/162.png);
+        }
+
+        .dv2 {
+            width: 1140px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 50px auto 30px !important;
+            height: 200px;
+            top: 600px;
+            position: static !important;
+            background-color: rgb(220, 210, 198);
+            background-size: 400px 350px;
+            background-image: url(../images/162.png);
+        }
+
+        .dv h3 {
+            line-height: 170px;
+            font-size: 40px;
+            font-weight: bolder;
+            color: #1d4700;
+            letter-spacing: 30px;
+        }
+
+        .dv2 h3 {
+            line-height: 170px;
+            font-size: 40px;
+            font-weight: bolder;
+            color: #1d4700;
+            letter-spacing: 30px;
+        }
+
+        .container .row {
+            height: 600px;
+        }
+
+        .right {
+            right: 0px;
+        }
+
+        .left {
+            left: 0px;
+        }
+
+        .list {
+            top: 20px;
+            position: relative;
+            color: rgb(0, 0, 0);
+            font-size: 14px;
+            list-style: none;
+            padding-top: 3px;
+            background-color: aliceblue;
+        }
+
+        .list li {
+            color: rgb(0, 0, 0);
+            font-size: 14px;
+            list-style: none;
+            height: 41px;
+            line-height: 41px;
+            transition: 2s;
+            border-bottom: 2px solid #aa343c;
+        }
+
+        .list li a {
+            float: left;
+            height: 40px;
+            line-height: 40px;
+            overflow: hidden;
+            font-size: 16px;
+            color: #d1af74 !important;
+            width: 512px;
+            text-indent: 20px;
+        }
+
+        .list li:hover {
+            transition: 1s;
+            position: relative;
+            top: -10px;
+            font-weight: bold;
+            color: #1d4700;
+            background-color: #1d4700;
+        }
+
+        @keyframes flex {
+            0% { top: 0px; }
+            25% { top: -10px; }
+            50% { top: 0px; }
+            75% { top: 10px; }
+            100% { top: 0px; }
+        }
+
+        .list-inline {
+            top: 65px;
+            position: relative;
+        }
+
+        .container .row {
+            height: 550px;
+        }
+
+        .gc {
+            margin-top: -10px !important;
+            padding-top: 15px !important;
+            height: auto !important;
+            min-height: 600px;
+        }
+
+        .gc a:hover {
+            filter: blur(6px) brightness(0.3);
+            transition: 0.5s;
+            height: 550px;
+            color: aliceblue;
+        }
+
+        .gc .col-3:hover::after {
+            position: absolute;
+            top: 28%;
+            left: 38%;
+            writing-mode: vertical-rl;
+            letter-spacing: 28px;
+            margin: 0 auto;
+            text-align: center;
+            font-family: "楷体", Arial, sans-serif;
+            font-size: 30px;
+            z-index: 1000;
+            color: white;
+        }
+
+        .gc .row1 .col-3:nth-child(1):hover::after { content: "商铜纵目面具"; }
+        .gc .row1 .col-3:nth-child(2):hover::after { content: "黄金面具"; }
+        .gc .row1 .col-3:nth-child(3):hover::after { content: "青铜立人像"; }
+        .gc .row1 .col-3:nth-child(4):hover::after { content: "高青铜神树"; }
+        .gc .row2 .col-3:nth-child(1):hover::after { content: "商铜太阳形器"; }
+        .gc .row2 .col-3:nth-child(2):hover::after { content: "商玉璋"; }
+        .gc .row2 .col-3:nth-child(3):hover::after { content: "黄金青铜人像"; }
+        .gc .row2 .col-3:nth-child(4):hover::after { content: "商金杖"; }
+
+        .gc a {
+            font-size: 20px;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        .text-clear {
+            color: black;
+            font-weight: bold;
+        }
+
+        .container .container {
+            display: none;
+        }
+
+        .content {
+            position: relative;
+            width: 1400px;
+            height: 600px;
+            margin: auto;
+            display: flex;
+            top: 20px;
+        }
+
+        .draw img {
+            width: 470px;
+            border: 10px solid #e8c7ab;
+            box-shadow: 10px 10px 10px rgb(40, 39, 39), -5px -5px 5px rgb(116, 113, 113);
+        }
+
+        .draw {
+            position: absolute;
+            margin: 90px auto;
+            box-shadow: 10px 10px 10px rgb(99, 97, 97);
+        }
+
+        .draw:nth-child(2) { left: 300px; transform: rotate(10deg); }
+        .draw:nth-child(3) { left: 700px; z-index: 10; transform: rotate(-20deg); }
+        .draw:nth-child(4) { left: 900px; transform: rotate(10deg); }
+        .draw:nth-child(1) { left: 20px; transform: rotate(-13deg); }
+
+        .cloud:nth-child(1) {
+            background-image: url(../images/yun2.png);
+            background-size: cover;
+            width: 120px;
+            height: 50px;
+            position: absolute;
+            left: 10%;
+            top: 100%;
+            z-index: 999;
+            transform: rotate(10deg);
+        }
+
+        .cloud:nth-child(2) {
+            background-image: url(../images/yun4.png);
+            background-size: cover;
+            transform: scale(1.4);
+            width: 120px;
+            height: 50px;
+            position: absolute;
+            left: 90%;
+            top: 160%;
+            z-index: 999;
+        }
+
+        .cloud:nth-child(3) {
+            background-image: url(../images/yun2.png);
+            background-size: cover;
+            width: 130px;
+            height: 60px;
+            position: absolute;
+            left: 4%;
+            top: 290%;
+            z-index: 999;
+        }
+
+        .content .draw:hover {
+            transform: rotate(20deg) scale(1.1);
+            transition: 1.2s;
+            z-index: 1000;
         }
     </style>
 </head>
+
 <body>
-    <!-- 全局数字化代码边框主容器 -->
-    <div class="digital-border-wrap">
-        <div class="scan-light"></div>
-        
-        <!-- 导航头部 -->
-        <header>
-            <div class="logo">三星堆数字文明博物馆</div>
-            <nav>
-                <ul>
-                    <li><a href="#" class="active">首页</a></li>
-                    <li><a href="#">数字文物</a></li>
-                    <li><a href="#">线上沉浸展</a></li>
-                    <li><a href="#">考古探秘</a></li>
-                    <li><a href="#">互动体验</a></li>
-                </ul>
-            </nav>
-        </header>
+    <!-- 全局数字化代码边框 -->
+    <div class="digital-code-border">
+        <div class="scan-line"></div>
 
-        <!-- 首页Banner区域 -->
-        <section class="banner">
-            <div class="banner-mask"></div>
-            <div class="banner-text">
-                <h1>千年古蜀 · 数字重生</h1>
-                <p>依托数字化交互技术，解锁三星堆神秘古蜀文明，沉浸式体验青铜神树、黄金面具的千年传奇</p>
-                <button class="digital-btn">进入数字沉浸展厅</button>
-            </div>
-        </section>
-
-        <!-- 核心文物数字化展区 -->
-        <section class="relic-section">
-            <h2 class="section-title">数字馆藏精选</h2>
-            <div class="relic-grid">
-                <!-- 文物卡片1 -->
-                <div class="relic-card">
-                    <img src="https://img2.baidu.com/it/u=3029812121,1812345678&fm=253&fmt=auto&app=120&f=JPEG?w=500&h=300" alt="黄金面具">
-                    <div class="relic-info">
-                        <h3>青铜大立人像</h3>
-                        <p>三星堆国宝级文物，数字化3D扫描还原细节，解锁古蜀祭祀文化密码</p>
-                    </div>
-                </div>
-                <!-- 文物卡片2 -->
-                <div class="relic-card">
-                    <img src="https://img1.baidu.com/it/u=2987654321,1234567890&fm=253&fmt=auto&app=120&f=JPEG?w=500&h=300" alt="青铜神树">
-                    <div class="relic-info">
-                        <h3>青铜神树</h3>
-                        <p>上古神话通天神木，数字光影动态演绎古蜀宇宙观与创世传说</p>
-                    </div>
-                </div>
-                <!-- 文物卡片3 -->
-                <div class="relic-card">
-                    <img src="https://img0.baidu.com/it/u=1987654321,2345678901&fm=253&fmt=auto&app=120&f=JPEG?w=500&h=300" alt="纵目面具">
-                    <div class="relic-info">
-                        <h3>纵目青铜面具</h3>
-                        <p>神秘千里纵目，数字化AR交互，探寻古蜀先民超凡想象力</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 页脚 -->
-        <footer>
-            <p>三星堆数字博物馆 © 2026 数字化沉浸式体验改版 | 古蜀文明数字传承</p>
-        </footer>
+    <div class="nav">
+        <ul class="nav">
+            <li><a href="../html/核心展示.html" target="_blank">核心展示内容</a></li>
+            <li><a href="../html/数字化体验.html" target="_blank">数字化体验</a></li>
+            <li><a href="#">三星堆数字博物馆</a></li>
+            <li><a href="../html/深入了解.html" target="_blank">深入了解</a></li>
+            <li><a href="../html/博物馆推荐.html" target="_blank">博物馆推荐</a></li>
+        </ul>
     </div>
+    <div class="custom-shape-divider-top-1703553098">
+        <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" class="shape-fill"></path>
+            <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" class="shape-fill"></path>
+            <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" class="shape-fill"></path>
+        </svg>
+    </div>
+
+    <div class="content-slp" style="background-color: #1D4700;">
+        <div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel" style="margin: 0 auto;">
+            <ol class="carousel-indicators">
+                <li data-target="#carouselExampleCaptions" data-slide-to="0" class="active"></li>
+                <li data-target="#carouselExampleCaptions" data-slide-to="1"></li>
+                <li data-target="#carouselExampleCaptions" data-slide-to="2"></li>
+            </ol>
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <video class="d-block w-100" autoplay muted loop playsinline>
+                        <source src="../images/images.2/视频1.mp4" type="video/mp4">
+                        <source src="../images/宣传片.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="carousel-item">
+                    <video class="d-block w-100" autoplay muted loop playsinline>
+                        <source src="../images/images.2/视频2.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="carousel-item">
+                    <video class="d-block w-100" autoplay muted loop playsinline>
+                        <source src="../images/images.2/视频3.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-target="#carouselExampleCaptions" data-slide="prev" style="width: 100px;">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-target="#carouselExampleCaptions" data-slide="next" style="width: 100px;">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </button>
+        </div>
+        <div class="hill-l"></div>
+        <div class="hill-r"></div>
+    </div>
+
+    <div class="dv">
+        <h3>要闻</h3>
+    </div>
+    <div class="container">
+        <div class="row" style="overflow: hidden;">
+            <div class="col-8 left">
+                <ul class="list" style="padding-top: 3px;background-color: rgb(255, 255, 255); ">
+                    <li><a target="_blank" href="https://yangbo.cctv.com/2023/11/15/ARTIY73MXR3G9ZnVXnQb0lMV231115.shtml " title="走进古文明：三星堆的十件核心文物！">走进古文明：三星堆的十件核心文物！</a></li>
+                    <li><a target="_blank" href="https://news.cnr.cn/native/gd/sz/20250621/t20250621_527223032.shtml " title="习语回响丨不断揭开三星堆的秘密">习语回响丨不断揭开三星堆的秘密</a></li>
+                    <li><a target="_blank" href="https://sichuan.scol.com.cn/ggxw/202307/58943629.html " title="总书记来到三星堆——"三星堆遗址考古成果在世界上是叫得响的"">总书记来到三星堆——"三星堆遗址考古成果在世界上是叫得响的"</a></li>
+                    <li><a target="_blank" href="https://m.thepaper.cn/baijiahao_26268070 " title="专家分析三星堆青铜器如何铸造">专家分析三星堆青铜器如何铸造</a></li>
+                    <li><a target="_blank" href="https://www.ha.chinanews.com.cn/wap/hnjk/2022/0318/41610.shtml " title="何时形成 何时结束 从年代学看三星堆文明">何时形成 何时结束 从年代学看三星堆文明</a></li>
+                    <li><a target="_blank" href="https://www.sc.chinanews.com.cn/whty/2024-03-08/205447.html " title="三星堆文化瑰宝闪耀世界：探寻古蜀文化遗珍 实证中华文明多元一体">三星堆文化瑰宝闪耀世界：探寻古蜀文化遗珍 实证中华文明多元一体</a></li>
+                    <li><a target="_blank" href="https://news.youth.cn/sz/202404/t20240415_15197010.htm " title="坚定文化自信 建设中华民族现代文明丨三星堆的文化瑰宝">坚定文化自信 建设中华民族现代文明丨三星堆的文化瑰宝</a></li>
+                    <li><a target="_blank" href="https://art.rmlt.com.cn/2026/0127/746175.shtml " title="三星堆金沙文物齐聚国博，看古蜀文明"双星"闪耀">三星堆金沙文物齐聚国博，看古蜀文明"双星"闪耀</a></li>
+                    <li><a target="_blank" href="https://news.cnr.cn/native/gd/sz/20250623/t20250623_527226189.shtml " title="近镜头·习近平的文化足迹｜"期待着更长的中华文明的发现发掘"">近镜头·习近平的文化足迹｜"期待着更长的中华文明的发现发掘"</a></li>
+                    <li><a target="_blank" href="https://www.qstheory.cn/qshyjx/2024-07/12/c_1130178563.htm " title="聆听数千年前文明的回响">聆听数千年前文明的回响</a></li>
+                    <li><a target="_blank" href="https://m.gmw.cn/2024-10/16/content_1303872856.htm " title="三星堆青铜神树：古蜀先民"通天梦"的现实样本">三星堆青铜神树：古蜀先民"通天梦"的现实样本</a></li>
+                    <li><a target="_blank" href="https://epaper.scdaily.cn/shtml/scrb/20241030/1019192.html " title="在三星堆 看到中华文明多元一体">在三星堆 看到中华文明多元一体</a></li>
+                    <li><a target="_blank" href="https://www.scge.gov.cn/html/website/outsite/sichuandangxiaobao/2024nian%20di6qi/di7ban%20lilunshiye1790940881453457410/zz1790953577271926785.html " title="三星堆蕴含的文明特征和文化意蕴">三星堆蕴含的文明特征和文化意蕴</a></li>
+                </ul>
+            </div>
+            <div class="col-4 right" style="background-color: rgb(255, 255, 255); top: 65px;border-radius: 15px;">
+                <ul class="list-inline" style="top:15px;">
+                    <li class="list-inline-item rounded mx-auto d-block"><img src="../images\images.2\长图.png" class="img-fluid" alt="...">包罗万象</li>
+                    <li class="list-inline-item rounded mx-auto d-block"><img src="../images\images.2\青铜头.JPG" class="img-fluid" alt="...">神秘震撼</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="dv2">
+        <h3>经典展品</h3>
+    </div>
+    <div class="container gc" style="max-width: 1400px;">
+        <div class="row row1">
+            <div class="col-3" style="margin: 0px; padding: 0px;">
+                <a href="" style="display: block; background-image: url(../images/images.2/zongmu2.png); background-size: cover; background-position: center; background-repeat: no-repeat;"></a>
+            </div>
+            <div class="col-3 select" style="margin: 0px; padding: 0px;">
+                <a href="" style="display: block; background-image: url(../images/images.2/mianzhao.png); background-size: cover; background-position: center; background-repeat: no-repeat;"></a>
+            </div>
+            <div class="col-3" style="margin: 0px; padding: 0px;">
+                <a href="" style="display: block; background-image: url(../images/images.2/lirenxiang.png); background-size: cover; background-position: center; background-repeat: no-repeat;"></a>
+            </div>
+            <div class="col-3" style="margin: 0px; padding: 0px;">
+                <a href="../html/jj.html" target="_blank" style="display: block; background-image: url(../images/images.2/qingtongshenshu.png); background-size: cover; background-position: center; background-repeat: no-repeat;"></a>
+            </div>
+        </div>
+        <div class="row row2">
+            <div class="col-3" style=" margin: 0px; padding: 0px;">
+                <a href="../html/tea.html" target="_blank" style="display: block; background-image: url(../images/images.2/taiyangxingqi.png); background-size: cover; background-position: center; background-repeat: no-repeat;"></a>
+            </div>
+            <div class="col-3" style="margin: 0px; padding: 0px;">
+                <a href="../html/ci.html" target="_blank" style="display: block; background-image: url(../images/images.2/yuzhang.png); background-size: cover; background-position: center; background-repeat: no-repeat;"></a>
+            </div>
+            <div class="col-3" style="margin: 0px; padding: 0px;">
+                <a href="../html/wri.html" target="_blank" style="display: block; background-image: url(../images/images.2/huangjinmianju.png); background-size: cover; background-position: center; background-repeat: no-repeat;"></a>
+            </div>
+            <div class="col-3" style="margin: 0px; padding: 0px;">
+                <a href="" style="display: block; background-image: url(../images/images.2/jinzhang.png); background-size: cover; background-position: center; background-repeat: no-repeat;"></a>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <div class="cloud cl1"></div>
+        <div class="cloud cl2"></div>
+        <div class="cloud cl3"></div>
+    </div>
+
+    <div class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    </div> <!-- 代码边框结束 -->
+
+    <script src="../js/slp.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const backToTop = document.getElementById('backToTop');
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 300) {
+                    backToTop.classList.add('active');
+                } else {
+                    backToTop.classList.remove('active');
+                }
+            });
+            backToTop.addEventListener('click', function() {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+    </script>
 </body>
 </html>
