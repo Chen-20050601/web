@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* 数字化代码边框 —— 唯一新增，不影响布局 */
+        /* 数字化代码边框 */
         .digital-code-border {
             position: relative;
             border: 2px solid #D4AF37;
@@ -99,7 +99,7 @@
             scroll-behavior: smooth;
         }
 
-        /* 你原来的全部样式 —— 100% 保留，只修复布局冲突 */
+        /* 全局重置 */
         * {
             margin: 0;
             padding: 0;
@@ -113,6 +113,9 @@
         a {
             color: #D9D207 !important;
             text-decoration: none !important;
+            display: block; /* 修复跳转 */
+            width: 100%;
+            height: 100%;
         }
 
         body {
@@ -130,17 +133,11 @@
         }
 
         .nav ul {
-            position: relative;
             height: 100px;
             padding: 0 15%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-
-        .nav li {
-            text-align: center;
-            padding: 0 10px;
         }
 
         .nav li a {
@@ -236,6 +233,7 @@
             margin: 0 !important;
         }
 
+        /* 要闻列表 —— 修复跳转 */
         .list {
             background: #fff;
             padding: 10px;
@@ -246,22 +244,23 @@
             height: 42px;
             line-height: 42px;
             border-bottom: 2px solid #aa343c;
+            position: relative;
         }
 
         .list li a {
             font-size: 16px;
             color: #d1af74 !important;
             text-indent: 15px;
+            position: relative;
+            z-index: 2;
         }
 
         .list li:hover {
             background-color: #1d4700;
             font-weight: bold;
-            position: relative;
-            top: -2px;
         }
 
-        /* 经典展品 */
+        /* 经典展品 —— 修复 hover 文字 */
         .gc {
             background: transparent !important;
             padding: 0 !important;
@@ -271,6 +270,7 @@
         .gc .col-3 {
             height: 280px;
             padding: 0 !important;
+            position: relative; /* 必须 */
         }
 
         .gc a {
@@ -286,7 +286,9 @@
             filter: blur(5px) brightness(0.4);
         }
 
-        .gc .col-3:hover::after {
+        /* 修复文字显示 */
+        .gc .col-3::after {
+            content: "";
             position: absolute;
             top: 50%;
             left: 50%;
@@ -297,16 +299,22 @@
             color: #fff;
             z-index: 100;
             font-family: "楷体";
+            opacity: 0;
+            transition: opacity 0.4s;
         }
 
-        .gc .row1 .col-3:nth-child(1):hover::after { content: "商铜纵目面具"; }
-        .gc .row1 .col-3:nth-child(2):hover::after { content: "黄金面具"; }
-        .gc .row1 .col-3:nth-child(3):hover::after { content: "青铜立人像"; }
-        .gc .row1 .col-3:nth-child(4):hover::after { content: "高青铜神树"; }
-        .gc .row2 .col-3:nth-child(1):hover::after { content: "商铜太阳形器"; }
-        .gc .row2 .col-3:nth-child(2):hover::after { content: "商玉璋"; }
-        .gc .row2 .col-3:nth-child(3):hover::after { content: "黄金青铜人像"; }
-        .gc .row2 .col-3:nth-child(4):hover::after { content: "商金杖"; }
+        .gc .col-3:hover::after {
+            opacity: 1;
+        }
+
+        .gc .row1 .col-3:nth-child(1)::after { content: "商铜纵目面具"; }
+        .gc .row1 .col-3:nth-child(2)::after { content: "黄金面具"; }
+        .gc .row1 .col-3:nth-child(3)::after { content: "青铜立人像"; }
+        .gc .row1 .col-3:nth-child(4)::after { content: "高青铜神树"; }
+        .gc .row2 .col-3:nth-child(1)::after { content: "商铜太阳形器"; }
+        .gc .row2 .col-3:nth-child(2)::after { content: "商玉璋"; }
+        .gc .row2 .col-3:nth-child(3)::after { content: "黄金青铜人像"; }
+        .gc .row2 .col-3:nth-child(4)::after { content: "商金杖"; }
 
         /* 云朵 */
         .cloud {
@@ -348,7 +356,6 @@
 </head>
 
 <body>
-    <!-- 数字化代码边框（仅美化，不影响布局） -->
     <div class="digital-code-border">
         <div class="scan-line"></div>
 
@@ -406,7 +413,7 @@
             </div>
         </div>
 
-        <!-- 要闻 -->
+        <!-- 要闻 —— 链接已修复 -->
         <div class="dv"><h3>要闻</h3></div>
         <div class="container">
             <div class="row">
@@ -436,7 +443,7 @@
             </div>
         </div>
 
-        <!-- 经典展品 -->
+        <!-- 经典展品 —— hover 文字已修复 -->
         <div class="dv2"><h3>经典展品</h3></div>
         <div class="container gc">
             <div class="row row1">
@@ -466,7 +473,6 @@
         </div>
 
     </div>
-    <!-- 代码边框结束 -->
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
