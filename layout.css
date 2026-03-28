@@ -1,0 +1,23 @@
+* {
+    margin: 0;
+    padding: 0;
+
+}
+
+ol,
+ul {
+    list-style-type: none;
+
+}
+
+a {
+    /* 导航字体颜色 */
+    color: #D9D207 !important;
+
+    text-decoration: none !important;
+
+}
+/* 总的背景色 */
+body {
+    background-color: #1D4700 !important;
+}
