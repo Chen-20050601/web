@@ -1,0 +1,1474 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>三星堆数字化体验</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 全局样式 (完全保留，未做任何改动) */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Serif SC', 'SimSun', 'STKaiti', serif;
+        }
+
+        :root {
+            --primary-color: #b89b7d; /* 青铜色 */
+            --secondary-color: #d4af37; /* 金色 */
+            --dark-color: #2a4f3d; /* 深铜绿色 */
+            --medium-color: #3a6b5a; /* 中铜绿色 */
+            --light-color: #e8dfc8; /* 米白色 */
+            --accent-color: #8b5a2b; /* 深棕色 */
+            --copper-green: #0F2E17; /* 主绿色 */
+            --copper-green-light: #4a7b6a; /* 浅铜绿色 */
+            --copper-green-dark: #1a3f2d; /* 深铜绿色 */
+            --card-bg: rgba(58, 107, 90, 0.9); /* 卡片背景 */
+        }
+
+        body {
+            background: linear-gradient(135deg, #0F2E17 0%, #0F2E17 50%, #0F2E17 100%);
+            color: var(--light-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .copper-texture {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.05;
+            background-image:
+                radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.2) 0%, transparent 20%),
+                radial-gradient(circle at 80% 70%, rgba(184, 155, 125, 0.2) 0%, transparent 20%),
+                radial-gradient(circle at 40% 80%, rgba(139, 90, 43, 0.2) 0%, transparent 20%);
+        }
+
+        .page-container {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: none;
+        }
+
+        .page-container.active {
+            opacity: 1;
+            transform: translateY(0);
+            display: block;
+            position: relative;
+        }
+
+        .main-nav {
+            background: linear-gradient(to bottom, rgba(42, 79, 61, 0.95), rgba(26, 63, 45, 0.9));
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            padding: 15px 0;
+            transition: all 0.3s ease;
+            border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+            top: 0;
+        }
+
+        .main-nav.scrolled {
+            padding: 10px 0;
+            background-color: rgba(26, 63, 45, 0.98);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .main-nav-list {
+            display: flex;
+            list-style: none;
+            gap: 40px;
+        }
+
+        .main-nav-list li a {
+            color: var(--light-color);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            position: relative;
+            padding: 5px 0;
+            cursor: pointer;
+        }
+
+        .main-nav-list li a:hover {
+            color: var(--secondary-color);
+        }
+
+        .main-nav-list li a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background-color: var(--secondary-color);
+            bottom: 0;
+            left: 0;
+            transition: width 0.3s;
+        }
+
+        .main-nav-list li a:hover::after {
+            width: 100%;
+        }
+
+        .main-nav-list li a.active {
+            color: var(--secondary-color);
+        }
+
+        .main-nav-list li a.active::after {
+            width: 100%;
+        }
+
+        .hero {
+            height: 100vh;
+            background: linear-gradient(rgba(15, 46, 23, 0.85), rgba(15, 46, 23, 0.9)),
+                        url('https://images.unsplash.com/photo-1518655048521-f130df041f66?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            margin-top: 60px;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 30%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 70%, rgba(184, 155, 125, 0.1) 0%, transparent 50%);
+            z-index: 1;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: var(--secondary-color);
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+            letter-spacing: 2px;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+
+        .btn {
+            display: inline-block;
+            background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+            color: var(--light-color);
+            padding: 12px 30px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            background: linear-gradient(to right, var(--secondary-color), var(--primary-color));
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .core-showcase {
+            padding: 100px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 60px;
+            color: var(--secondary-color);
+            position: relative;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .content-card {
+            background: linear-gradient(145deg, rgba(58, 107, 90, 0.9), rgba(42, 79, 61, 0.9));
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 50px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border-left: 5px solid var(--primary-color);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .content-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color), var(--primary-color));
+        }
+
+        .content-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        }
+
+        .content-card h3 {
+            color: var(--secondary-color);
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .content-card h3 i {
+            margin-right: 15px;
+            color: var(--primary-color);
+        }
+
+        .content-card p {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+
+        .content-card ul, .content-card ol {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        .content-card li {
+            margin-bottom: 10px;
+        }
+
+        .page-header {
+            text-align: center;
+            padding: 100px 0 30px;
+        }
+
+        .page-title {
+            font-size: 3rem;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .page-subtitle {
+            font-size: 1.2rem;
+            color: var(--light-color);
+            max-width: 800px;
+            margin: 0 auto 40px;
+            line-height: 1.6;
+        }
+
+        .back-to-home {
+            text-align: center;
+            padding: 50px 0 30px;
+        }
+
+        .featured-content {
+            padding: 80px 0;
+            background: linear-gradient(to bottom, rgba(15, 46, 23, 0.8), rgba(15, 46, 23, 0.9));
+        }
+
+        .featured-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .featured-card {
+            background: linear-gradient(145deg, rgba(58, 107, 90, 0.9), rgba(42, 79, 61, 0.9));
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .featured-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        }
+
+        .featured-img {
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .featured-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .featured-card:hover .featured-img img {
+            transform: scale(1.1);
+        }
+
+        .featured-info {
+            padding: 25px;
+        }
+
+        .featured-info h3 {
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .featured-info p {
+            margin-bottom: 20px;
+            color: #ddd;
+        }
+
+        .featured-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+
+        .featured-link:hover {
+            color: var(--secondary-color);
+        }
+
+        .featured-link i {
+            margin-left: 8px;
+            transition: transform 0.3s;
+        }
+
+        .featured-link:hover i {
+            transform: translateX(5px);
+        }
+
+        .highlight {
+            color: var(--secondary-color);
+            font-weight: bold;
+        }
+
+        footer {
+            background: linear-gradient(to bottom, rgba(26, 63, 45, 0.95), rgba(20, 50, 35, 0.98));
+            padding: 50px 0 20px;
+            text-align: center;
+            border-top: 2px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+
+        .footer-section {
+            flex: 1;
+            min-width: 300px;
+            margin-bottom: 30px;
+        }
+
+        .footer-section h3 {
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .copyright {
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+
+        .footer-link {
+            color: #ffffff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-link:hover {
+            color: var(--secondary-color);
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: var(--light-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            z-index: 999;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .back-to-top.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            transform: translateY(-5px);
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s, transform 0.8s;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .circular-display {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 500px;
+            margin: 3rem 0;
+        }
+        .circle {
+            width: 510px;
+            height: 510px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #0f3226, #0a2018);
+            box-shadow:
+                0 0 0 8px var(--primary-color),
+                0 0 0 12px #0f3226,
+                0 20px 40px rgba(0, 0, 0, 0.6);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.5s ease;
+        }
+        .circle:hover {
+            transform: scale(1.02);
+        }
+        .circle-img-container {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .circle-img {
+            width: 110%;
+            height: 110%;
+            object-fit: cover;
+            border-radius: 50%;
+            transition: transform 0.8s ease;
+            filter: brightness(1.05) contrast(1.1);
+        }
+        .circle-img:hover {
+            transform: scale(1.05);
+        }
+        .circle-border-effect {
+            position: absolute;
+            width: 110%;
+            height: 110%;
+            border-radius: 50%;
+            background: radial-gradient(circle, transparent 60%, #0f3226 80%);
+            z-index: 2;
+            pointer-events: none;
+        }
+        .artifact-info {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 0 2rem;
+        }
+        .artifact-title {
+            font-size: 1.8rem;
+            color: var(--secondary-color);
+            margin-bottom: 0.8rem;
+        }
+        .artifact-desc {
+            color: var(--light-color);
+            font-size: 1.1rem;
+            line-height: 1.7;
+            max-width: 600px;
+            margin: 0 auto 1.5rem;
+        }
+        /* 查看详情按钮已被删除，此处样式保留但无对应元素 */
+        .nav-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.8rem;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        .nav-arrow:hover {
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            transform: translateY(-50%) scale(1.1);
+        }
+        .arrow-left {
+            left: 10%;
+        }
+        .arrow-right {
+            right: 10%;
+        }
+        /* 预览图区域已被完全删除，故相关样式保留但不生效 */
+        @media (max-width: 1024px) {
+            .circular-display { height: 450px; }
+            .circle { width: 320px; height: 320px; }
+        }
+        @media (max-width: 768px) {
+            .circular-display { height: 380px; }
+            .circle { width: 260px; height: 260px; }
+            .nav-arrow { width: 50px; height: 50px; font-size: 1.5rem; }
+            .arrow-left { left: 5%; }
+            .arrow-right { right: 5%; }
+        }
+
+        .video-container {
+            width: 100%;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 30px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        .artifact-video {
+            width: 100%;
+            height: 500px;
+            border: none;
+        }
+
+        .video-page {
+            display: none;
+        }
+        .video-page.active {
+            display: block;
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2.5rem;
+            margin: 2.5rem 0;
+        }
+        .video-item {
+            background-color: #0f3226;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        .video-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+        .video-player {
+            position: relative;
+            width: 100%;
+            height: 280px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .video-thumbnail {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        .video-player:hover .video-thumbnail {
+            transform: scale(1.05);
+        }
+        .video-play-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 70px;
+            height: 70px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 2rem;
+            transition: all 0.3s ease;
+            opacity: 0.9;
+        }
+        .video-player:hover .video-play-btn {
+            background-color: rgba(76, 175, 80, 0.9);
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+        .video-info {
+            padding: 1.5rem;
+        }
+        .video-title {
+            font-size: 1.5rem;
+            color: #a5d6a7;
+            margin-bottom: 0.8rem;
+        }
+        .video-desc {
+            color: #c8e6c9;
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        .video-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #81c784;
+            font-size: 0.95rem;
+        }
+        .video-duration, .video-views {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .video-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+        .video-modal-content {
+            width: 90%;
+            max-width: 900px;
+            position: relative;
+        }
+        .video-modal-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        .video-modal-close:hover {
+            color: #4caf50;
+        }
+        .video-modal-player {
+            width: 100%;
+            height: 500px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .video-pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 3rem 0 5rem;
+            gap: 1rem;
+        }
+        .video-page-arrow {
+            background-color: #1b5e20;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .video-page-arrow:hover {
+            background-color: #4caf50;
+            transform: scale(1.1);
+        }
+        .video-page-numbers {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .video-page-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: var(--light-color);
+        }
+        .video-page-number:hover {
+            background-color: rgba(76, 175, 80, 0.3);
+        }
+        .video-page-number.active {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        /* 文献页面样式 */
+        .documents-filter {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            background-color: #0f3226;
+            color: #c8e6c9;
+            border: none;
+            padding: 0.8rem 1.8rem;
+            border-radius: 30px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background-color: #2e7d32;
+            color: white;
+        }
+        .documents-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2.5rem;
+            margin: 2.5rem 0;
+        }
+        .document-card {
+            background-color: #0f3226;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+        }
+        .document-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+        }
+        .document-header {
+            padding: 1.5rem 1.5rem 0.5rem;
+        }
+        .document-category {
+            display: inline-block;
+            background-color: #1b5e20;
+            color: white;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-bottom: 0.8rem;
+        }
+        .document-title {
+            font-size: 1.5rem;
+            color: #a5d6a7;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+        .document-body {
+            padding: 0 1.5rem 1.5rem;
+            flex-grow: 1;
+        }
+        .document-abstract {
+            color: #c8e6c9;
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+        .document-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #81c784;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+        .document-footer {
+            padding: 1.5rem;
+            background-color: #0a2018;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .document-author {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        .author-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .author-info h4 {
+            color: #a5d6a7;
+            font-size: 1rem;
+            margin-bottom: 0.2rem;
+        }
+        .author-info p {
+            color: #81c784;
+            font-size: 0.85rem;
+        }
+        .document-actions {
+            display: flex;
+            gap: 0.8rem;
+        }
+        .action-btn {
+            background-color: #1b5e20;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .action-btn:hover {
+            background-color: #2e7d32;
+        }
+        .action-btn.download {
+            background-color: #0d47a1;
+        }
+        .action-btn.download:hover {
+            background-color: #1565c0;
+        }
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        @media (max-width: 768px) {
+            .video-grid {
+                grid-template-columns: 1fr;
+            }
+            .documents-grid {
+                grid-template-columns: 1fr;
+            }
+            .document-footer {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            .document-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="copper-texture"></div>
+
+    <nav class="main-nav" id="mainNav">
+        <div class="container nav-container">
+            <ul class="main-nav-list">
+                <li><a href="#" class="main-nav-link active" data-page="home">首页</a></li>
+                <li><a href="#" class="main-nav-link" data-page="image">文物图片展示</a></li>
+                <li><a href="#" class="main-nav-link" data-page="video">文物视频展示</a></li>
+                <li><a href="#" class="main-nav-link" data-page="paper">相关论文展示</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div id="home-page" class="page-container active">
+        <section class="hero">
+            <div class="hero-content">
+                <h1>三星堆数字化体验</h1>
+                <p>通过数字化手段沉浸式体验三星堆文物的魅力，高清图片、珍贵视频、学术论文全方位展现古蜀文明的神秘与辉煌</p>
+                <a href="#" class="btn" id="exploreBtn" data-page="image">开始体验</a>
+            </div>
+        </section>
+        <section class="featured-content">
+            <div class="container">
+                <h2 class="section-title">三星堆数字化体验</h2>
+                <div class="featured-grid">
+                    <div class="featured-card">
+                        <div class="featured-img">
+                            <img src="https://imgs.699pic.com/images/701/009/785.jpg!seo.v1" alt="文物图片展示">
+                        </div>
+                        <div class="featured-info">
+                            <h3>文物图片展示</h3>
+                            <p>高清文物图片，多角度展示三星堆珍贵文物细节，仿博物馆交互体验，可自由切换查看不同文物。</p>
+                            <a href="#" class="featured-link" data-page="image">查看文物图片 <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                    <div class="featured-card">
+                        <div class="featured-img">
+                            <img src="https://imgs.699pic.com/images/507/745/010.jpg!seo.v1"alt="文物视频展示">
+                        </div>
+                        <div class="featured-info">
+                            <h3>文物视频展示</h3>
+                            <p>珍贵的文物发掘、修复、研究视频资料，动态展示文物的历史背景和文化价值。</p>
+                            <a href="#" class="featured-link" data-page="video">观看文物视频 <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                    <div class="featured-card">
+                        <div class="featured-img">
+                            <img src="https://images.unsplash.com/photo-1512758017271-d7b84c2113f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="相关论文展示">
+                        </div>
+                        <div class="featured-info">
+                            <h3>相关论文展示</h3>
+                            <p>收录国内外顶尖学者关于三星堆的研究论文，深入了解古蜀文明的学术研究成果。</p>
+                            <a href="#" class="featured-link" data-page="paper">查阅学术论文 <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- 文物图片展示页（已删除预览小图和查看详情按钮，并更新操作说明） -->
+    <div id="image-page" class="page-container">
+        <section class="core-showcase">
+            <div class="container">
+                <div class="page-header">
+                    <h1 class="page-title">文物图片展示</h1>
+                    <p class="page-subtitle">博物馆交互体验，高清展示文物细节，多角度欣赏古蜀文明的艺术瑰宝</p>
+                </div>
+                <div class="fade-in">
+                    <h2 class="section-title">三星堆珍贵文物</h2>
+                    <div class="content-card">
+                        <h3><i class="fas fa-images"></i> 文物高清展示</h3>
+                        <p>以下展示三星堆最具代表性的文物，点击左右箭头可切换查看不同文物，鼠标悬停在圆形展示区可查看文物细节效果。</p>
+                        <!-- 圆形文物展示 - 已删除左右预览图和查看详情按钮 -->
+                        <div class="circular-display">
+                            <!-- 左右预览图div已完全移除 -->
+                            <div class="nav-arrow arrow-left" id="prev-artifact">
+                                <i class="fas fa-chevron-left"></i>
+                            </div>
+                            <div class="circle">
+                                <div class="circle-img-container">
+                                    <img id="current-artifact-img" class="circle-img" src="https://images.unsplash.com/photo-1628088026663-66496b898984?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="当前文物">
+                                </div>
+                                <div class="circle-border-effect"></div>
+                            </div>
+                            <div class="nav-arrow arrow-right" id="next-artifact">
+                                <i class="fas fa-chevron-right"></i>
+                            </div>
+                            <!-- 右侧预览图div已移除 -->
+                        </div>
+                        <div class="artifact-info">
+                            <h2 id="artifact-title" class="artifact-title">青铜纵目面具</h2>
+                            <p id="artifact-desc" class="artifact-desc">青铜纵目面具高66厘米，宽138厘米，眼耳极度夸张，被人们誉为"千里眼"和"顺风耳"。一般认为，此面具与史书中有关蜀人始祖蚕丛"纵目"的记载相呼应，很有可能表现的就是古蜀人顶礼膜拜的祖先神——蚕丛。</p>
+                            <!-- 查看详情按钮已删除 -->
+                        </div>
+                        <p class="highlight">操作说明：</p>
+                        <ul>
+                            <li>点击左右箭头按钮可切换查看不同文物</li>
+                            <li>鼠标悬停在圆形展示区可放大查看文物细节</li>
+                            <!-- 以下两条说明已删除，因为对应元素已移除 -->
+                        </ul>
+                    </div>
+                    <div class="back-to-home">
+                        <a href="#" class="btn" data-page="home"><i class="fas fa-home"></i> 返回首页</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- 文物视频展示页（未改动） -->
+    <div id="video-page" class="page-container">
+        <section class="core-showcase">
+            <div class="container">
+                <div class="page-header">
+                    <h1 class="page-title">文物视频展示</h1>
+                    <p class="page-subtitle">通过动态视频了解三星堆文物的发掘过程、修复技术和文化背景，沉浸式体验古蜀文明</p>
+                </div>
+                <div class="fade-in">
+                    <h2 class="section-title">三星堆文物视频</h2>
+
+                    <div id="video-pages-container">
+                        <div class="video-page active" id="video-page-1">
+                            <div class="video-grid" id="video-grid-page1"></div>
+                        </div>
+                        <div class="video-page" id="video-page-2">
+                            <div class="video-grid" id="video-grid-page2"></div>
+                        </div>
+                        <div class="video-page" id="video-page-3">
+                            <div class="video-grid" id="video-grid-page3"></div>
+                        </div>
+                    </div>
+
+                    <div class="video-pagination">
+                        <div class="video-page-arrow" id="prev-video-page">
+                            <i class="fas fa-chevron-left"></i>
+                        </div>
+                        <div class="video-page-numbers" id="video-page-numbers">
+                            <div class="video-page-number active" data-page="1">1</div>
+                            <div class="video-page-number" data-page="2">2</div>
+                            <div class="video-page-number" data-page="3">3</div>
+                        </div>
+                        <div class="video-page-arrow" id="next-video-page">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+
+                    <div class="back-to-home">
+                        <a href="#" class="btn" data-page="home"><i class="fas fa-home"></i> 返回首页</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- 相关论文展示页（PDF链接已更新） -->
+    <div id="paper-page" class="page-container">
+        <section class="core-showcase">
+            <div class="container">
+                <div class="page-header">
+                    <h1 class="page-title">相关论文展示</h1>
+                    <p class="page-subtitle">收录国内外顶尖学者关于三星堆的研究论文，为您提供深入了解古蜀文明的学术视角</p>
+                </div>
+                <div class="fade-in">
+                    <h2 class="section-title">三星堆研究文献</h2>
+
+                    <div class="documents-filter" id="documents-filter"></div>
+
+                    <div class="documents-grid" id="documents-grid"></div>
+
+                    <div class="back-to-home">
+                        <a href="#" class="btn" data-page="home"><i class="fas fa-home"></i> 返回首页</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+
+                </div>
+                <div class="footer-section">
+                    <h3>三星堆数字化体验</h3>
+                    <p>通过数字化手段传承和展示三星堆文化遗产，让更多人了解和感受古蜀文明的独特魅力。</p>
+                </div>
+                <div class="footer-section">
+                    <h3>快速链接</h3>
+                    <ul style="list-style: none; line-height: 2;">
+                        <li><a href="#" class="footer-link" data-page="home">首页</a></li>
+                        <li><a href="#" class="footer-link" data-page="image">文物图片展示</a></li>
+                        <li><a href="#" class="footer-link" data-page="video">文物视频展示</a></li>
+                        <li><a href="#" class="footer-link" data-page="paper">相关论文展示</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+
+            </div>
+        </div>
+    </footer>
+
+    <div class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <div class="video-modal" id="video-modal">
+        <div class="video-modal-content">
+            <div class="video-modal-close" id="video-modal-close">
+                <i class="fas fa-times"></i>
+            </div>
+            <div class="video-modal-player">
+                <video id="modal-video" controls style="width: 100%; height: 100%;">
+                    <source id="modal-video-source" src="" type="video/mp4">
+                    您的浏览器不支持视频播放。
+                </video>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const pageContainers = {
+                'home': document.getElementById('home-page'),
+                'image': document.getElementById('image-page'),
+                'video': document.getElementById('video-page'),
+                'paper': document.getElementById('paper-page')
+            };
+            const navLinks = document.querySelectorAll('.main-nav-link, .featured-link, .footer-link, .btn[data-page]');
+
+            // ---------- 文物数据（图片页用）- 已移除thumb属性，因为预览图已删除 ----------
+            const artifacts = [
+                { title: "青铜纵目面具", desc: "青铜纵目面具高66厘米，宽138厘米，眼耳极度夸张，被人们誉为'千里眼'和'顺风耳'。一般认为，此面具与史书中有关蜀人始祖蚕丛'纵目'的记载相呼应，很有可能表现的就是古蜀人顶礼膜拜的祖先神——蚕丛。", img: "../images/images.2/zongmu2.png" },
+                { title: "青铜神树", desc: "三星堆出土的青铜树，印证了《山海经·大荒东经》的记载：汤谷上有扶木，一日方至，一日方出，皆载于乌。三星堆神树应是古代传说中扶桑、建木等神树的一种复合产物，其主要功能之一即为'通天'。", img: "../images/images.2/qingtongshenshu.png" },
+                { title: "黄金面具", desc: "三星堆黄金面具采用贴金工艺打造，金箔厚度仅0.2毫米，工艺精湛。作为古蜀最高等级祭祀礼器，面具象征祭祀者（国王/大祭司）的神权身份，用于祭祀中'以金为面，沟通神灵'。", img: "../images/images.2/mianzhao.jpg" },
+                { title: "青铜大立人", desc: "青铜大立人是三星堆出土最高的青铜人像，为古蜀祭祀主礼者化身，其身份为'国王兼大祭司'，是祭祀活动的核心主导者，印证了古蜀'政教合一'的社会结构。", img: "../images/images.2/立人像.png" },
+                { title: "玉璋", desc: "三星堆出土的玉璋为上古重要祭祀礼器，器身刻有龙纹、鸟纹等神异图案，是'通神'的核心载体，既是古蜀人祭祀山川日月、沟通人神的核心礼器，也是理解古蜀祭祀信仰的关键文物。", img: "../images/images.2/玉璋.png" },
+                { title: "金杖", desc: "三星堆出土的金杖实际上就是一句标志着王权、神权和经济社会财富垄断者权的权杖，为古蜀王国政权的最高象征物，杖身刻有鱼、鸟、人像等图案，具有重要的历史价值。", img: "../images/images.2/jinzhang.png" }
+            ];
+            let currentArtifactIndex = 0;
+
+            // ---------- 视频数据 ----------
+            const videos = [
+                { id: 1, title: "三星堆考古新发现：祭祀坑的秘密", description: "探索三星堆最新考古发现，解密六个新祭祀坑的发掘过程与重要文物，包括黄金面具、顶尊跪坐人像等惊世发现。", thumbnail: "../images/images.2/金面罩.jpg", duration: "42:58", views: "325万", videoUrl: "../images/video/1-1.mp4" },
+                { id: 2, title: "青铜神树：古蜀人的通天之梯", description: "深度解析三星堆青铜神树的制作工艺、文化内涵与宗教意义，探讨其与《山海经》中神树传说的关联。", thumbnail: "../images/images.2/qingtongshenshu.png", duration: "32:10", views: "189万", videoUrl: "../images/video/1-2.mp4" },
+                { id: 3, title: "三星堆青铜铸造技术揭秘", description: "通过科学实验和工艺复原，揭示三星堆青铜器高超的铸造技术，包括范铸法、分铸法、焊接技术等。", thumbnail: "../images/images.2/金权杖.jpg", duration: "4:44", views: "210万", videoUrl: "../images/video/1-3.mp4" },
+                { id: 4, title: "三星堆文字之谜：是否有文字系统？", description: "探讨三星堆符号的性质，分析刻划符号与图案，研究古蜀文明是否已发展出文字系统。", thumbnail: "../images/images.2/神权.png", duration: "8:03", views: "156万", videoUrl: "../images/video/1-4.mp4" },
+                { id: 5, title: "三星堆与中原商文化的关系", description: "比较三星堆与中原商文明的异同，探讨古蜀国与商王朝的文化交流、贸易往来与政治关系。", thumbnail: "../images/images.2/区域分布.png", duration: "4:53", views: "198万", videoUrl: "../images/video/2-1.mp4" },
+                { id: 6, title: "三星堆黄金制品的来源与工艺", description: "通过科技分析探索三星堆黄金的来源，复原金面具、金杖的制作工艺，揭示古蜀国的黄金加工技术。", thumbnail: "../images/images.2/huangjinmianju.png", duration: "30:32", views: "132万", videoUrl: "../images/video/2-2.mp4" },
+                { id: 7, title: "三星堆玉器：礼仪与权力", description: "分析三星堆玉器的种类、功能与象征意义，探讨玉器在古蜀国社会等级与祭祀活动中的作用。", thumbnail: "../images/images.2/yuzhang.png", duration: "34:45", views: "110万", videoUrl: "../images/video/2-3.mp4" },
+                { id: 8, title: "三星堆文明突然消失之谜", description: "探讨三星堆文明在公元前1100年左右突然衰落的原因，分析洪水、战争、迁徙等多种假说。", thumbnail: "../images/images.2/房子.JPG", duration: "11:57", views: "187万", videoUrl: "../images/video/2-4.mp4" },
+                { id: 9, title: "三星堆与金沙：古蜀文明的传承", description: "比较三星堆与金沙遗址的文物特征，探讨古蜀文明从三星堆向金沙的转移与演变过程。", thumbnail: "../images/images.2/青铜头.JPG", duration: "34:26", views: "176万", videoUrl: "../images/video/3-1.mp4" },
+                { id: 10, title: "三星堆的国际文化交流", description: "从象牙、海贝、黄金等文物出发，探索三星堆与东南亚、南亚甚至中亚地区的文化交流与贸易往来。", thumbnail: "../images/images.2/长图.png", duration: "6:12", views: "145万", videoUrl: "../images/video/3-2.mp4" }
+            ];
+
+            const videosPerPage = [4, 4, 2];
+            let currentVideoPage = 1;
+
+            // ---------- 文献数据（已更新第一篇PDF路径） ----------
+            const documents = [
+                {
+                    id: 1,
+                    title: "成都平原中—晚全新世环境考古研究进展",
+                    category: "科技考古",
+                    abstract: "采用X射线荧光、金相分析、铅同位素分析等方法，对三星堆青铜器的合金成分、制作工艺、矿料来源进行系统研究，揭示古蜀国青铜生产的技术特点与资源网络。",
+                    author: "黄明 马春梅 朱诚",
+                    authorTitle: "南京大学地理与海洋科学学院，江苏南京210023 成都文物考古研究院，四川成都610072",
+                    date: "2017年12月",
+                    pages: 12,
+
+                    pdfUrl: "pdfs/成都平原中——晚全新世环境考古研究进展_黄明.pdf",  // 👈 已替换为相对路径
+
+                },
+                { id: 2, title: "考古，让人们真真切切触摸到中华文明的血脉", category: "文化比较", abstract: "通过比较三星堆与郑州商城、殷墟等商文化遗址的文物特征，分析古蜀文明与中原商文化的异同，探讨两者之间的文化交流、技术传播与政治关系。", author: "李华", authorTitle: "中国社会科学院考古研究所研究员", authorAvatar: "https://randomuser.me/api/portraits/women/44.jpg", date: "2024年2月28", pages: 24, citations: 0, pdfUrl: "#"},
+                { id: 3, title: "三星堆祭祀坑出土铜顶尊跪坐人像科技分析及相关问题", category: "工艺技术", abstract: "通过微量元素分析和金相观察，确定三星堆金器的可能矿源，复原金箔捶拓、包金、贴金等制作工艺，评估古蜀国黄金加工的技术水平。", author: "郭建波 郑芦 王冲 肖庆 李映福 刘志岩 余健 冉宏林", authorTitle: "四川省文物考古研究院", authorAvatar: "https://randomuser.me/api/portraits/men/67.jpg", date: "2026第一期", pages: 17, citations: 0, pdfUrl: "#" },
+                { id: 4, title: "三星堆鸟形器及鸟纹饰研究", category: "宗教考古", abstract: "结合《山海经》等文献记载，分析青铜神树的象征意义，探讨古蜀人的宇宙观、通天思想与神灵体系，揭示三星堆文明的宗教特征。", author: "唐诗旭", authorTitle: "四川师范大学硕士", authorAvatar: "https://randomuser.me/api/portraits/women/68.jpg", date: "2025-6-3", pages: 142, citations: 0, pdfUrl: "#"},
+                { id: 5, title: "金沙遗址出土象牙的有机硅嵌封保存效果评价", category: "科技考古", abstract: "通过DNA分析和同位素研究，确定三星堆象牙的动物种类与地理来源，探讨象牙在古蜀国祭祀活动中的功能与象征意义。", author: "蒋璐蔓 肖嶙 白玉龙 洪静 孙杰 王宁 蒋浪 向仕林 赵丽娟", authorTitle: "成都市文物考古研究院", authorAvatar: "https://randomuser.me/api/portraits/men/75.jpg", date: "2025年12月", pages: 10, citations: 0, pdfUrl: "#" },
+                { id: 6, title: "古代玉石白化机理解析———以三星堆遗址出土部分玉器为例", category: "工艺技术", abstract: "对三星堆出土玉器进行系统分类，分析琮、璋、璧、戈等玉器的形制演变、制作工艺与社会功能，探讨玉器在古蜀礼仪制度中的作用。", author: "王云鹏 刘建成 李志敏 王凤娇 鲁海子 方辉 马清林", authorTitle: "山东大学环境与社会考古学国际合作联合实验室", authorAvatar: "https://randomuser.me/api/portraits/women/26.jpg", date: "2024年10月", pages: 17, citations: 0, pdfUrl: "#" },
+                { id: 7, title: "南方丝绸之路与对外关系研讨", category: "文化交流", abstract: "以海贝、象牙、黄金等为线索，探讨三星堆文明与东南亚、南亚地区的文化交流，论证古蜀国在早期南方丝绸之路上的地位。", author: "颜信", authorTitle: " 四川师范大学硕士", authorAvatar: "https://randomuser.me/api/portraits/men/55.jpg", date: "2011年12月1日", pages: 111, citations: 92, pdfUrl: "#" },
+                { id: 8, title: "用科技让考古和时代对接", category: "科技考古", abstract: "通过孢粉、植硅体、地貌等分析，重建三星堆时期的古环境，探讨环境变迁对古蜀文明产生、发展与衰落的影响。", author: "周敏", authorTitle: "南京大学地理与海洋科学学院教授", authorAvatar: "https://randomuser.me/api/portraits/women/33.jpg", date: "2023-08-14", pages: 17, citations: 63, pdfUrl: "#" },
+                { id: 9, title: "三星堆文化与中原夏商文化的交流研究述评", category: "文化交流", abstract: "系统报道2019-2022年三星堆新发现6个祭祀坑的发掘情况，介绍出土文物、层位关系与初步认识，为后续研究提供基础资料。", author: " 李桂芳", authorTitle: "三星堆考古工作队", authorAvatar: "https://randomuser.me/api/portraits/men/45.jpg", date: "2023年第4期", pages: 12, citations: 0, pdfUrl: "#"}
+
+
+            ];
+
+            // ---------- 页面切换 ----------
+            function switchPage(pageId) {
+                Object.values(pageContainers).forEach(container => { if (container) container.classList.remove('active'); });
+                if (pageContainers[pageId]) {
+                    pageContainers[pageId].classList.add('active');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    setTimeout(() => {
+                        const fadeElements = pageContainers[pageId].querySelectorAll('.fade-in');
+                        fadeElements.forEach(el => el.classList.add('visible'));
+                    }, 300);
+                }
+                document.querySelectorAll('.main-nav-link').forEach(link => {
+                    link.classList.toggle('active', link.getAttribute('data-page') === pageId);
+                });
+            }
+            navLinks.forEach(link => {
+                link.addEventListener('click', e => { e.preventDefault(); switchPage(link.getAttribute('data-page')); });
+            });
+            document.getElementById('exploreBtn').addEventListener('click', e => { e.preventDefault(); switchPage('image'); });
+
+            // ---------- 滚动监听 ----------
+            window.addEventListener('scroll', () => {
+                const mainNav = document.getElementById('mainNav');
+                const backToTop = document.getElementById('backToTop');
+                mainNav.classList.toggle('scrolled', window.scrollY > 100);
+                backToTop.classList.toggle('active', window.scrollY > 500);
+                const activePage = document.querySelector('.page-container.active');
+                if (activePage) {
+                    activePage.querySelectorAll('.fade-in').forEach(el => {
+                        if (el.getBoundingClientRect().top < window.innerHeight - 100) el.classList.add('visible');
+                    });
+                }
+            });
+            document.getElementById('backToTop').addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            // ---------- 图片页文物切换（已移除预览图更新代码） ----------
+            function updateArtifactDisplay() {
+                const artifact = artifacts[currentArtifactIndex];
+                document.getElementById('current-artifact-img').src = artifact.img;
+                document.getElementById('artifact-title').textContent = artifact.title;
+                document.getElementById('artifact-desc').textContent = artifact.desc;
+                // 以下预览图更新代码已删除，因为对应元素已移除
+            }
+            document.getElementById('prev-artifact')?.addEventListener('click', () => {
+                currentArtifactIndex = (currentArtifactIndex - 1 + artifacts.length) % artifacts.length;
+                updateArtifactDisplay();
+            });
+            document.getElementById('next-artifact')?.addEventListener('click', () => {
+                currentArtifactIndex = (currentArtifactIndex + 1) % artifacts.length;
+                updateArtifactDisplay();
+            });
+
+            // ---------- 视频分页功能 ----------
+            function generateVideoPages() {
+                let start = 0;
+                for (let page = 1; page <= 3; page++) {
+                    const grid = document.getElementById(`video-grid-page${page}`);
+                    if (!grid) continue;
+                    grid.innerHTML = '';
+                    const count = videosPerPage[page-1];
+                    for (let i = 0; i < count; i++) {
+                        const idx = start + i;
+                        if (idx >= videos.length) break;
+                        const video = videos[idx];
+                        const videoItem = document.createElement('div');
+                        videoItem.className = 'video-item';
+                        videoItem.innerHTML = `
+                            <div class="video-player" data-video-url="${video.videoUrl}">
+                                <img src="${video.thumbnail}" alt="${video.title}" class="video-thumbnail">
+                                <div class="video-play-btn">
+                                    <i class="fas fa-play"></i>
+                                </div>
+                            </div>
+                            <div class="video-info">
+                                <h3 class="video-title">${video.title}</h3>
+                                <p class="video-desc">${video.description}</p>
+                                <div class="video-meta">
+                                    <div class="video-duration">
+                                        <i class="far fa-clock"></i>
+                                        <span>${video.duration}</span>
+                                    </div>
+                                    <div class="video-views">
+                                        <i class="far fa-eye"></i>
+                                        <span>${video.views} 播放</span>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        grid.appendChild(videoItem);
+                    }
+                    start += count;
+                }
+                attachVideoEvents();
+            }
+
+            function attachVideoEvents() {
+                const videoPlayers = document.querySelectorAll('.video-player');
+                videoPlayers.forEach(player => {
+                    const videoUrl = player.getAttribute('data-video-url');
+                    player.addEventListener('click', () => {
+                        const modalVideo = document.getElementById('modal-video');
+                        const modalVideoSource = document.getElementById('modal-video-source');
+                        modalVideoSource.src = videoUrl;
+                        modalVideo.load();
+                        document.getElementById('video-modal').style.display = 'flex';
+                        modalVideo.play();
+                    });
+                });
+            }
+
+            function switchVideoPage(page) {
+                document.querySelectorAll('.video-page').forEach(p => p.classList.remove('active'));
+                document.getElementById(`video-page-${page}`).classList.add('active');
+                document.querySelectorAll('.video-page-number').forEach(num => {
+                    num.classList.toggle('active', num.getAttribute('data-page') == page);
+                });
+                currentVideoPage = page;
+            }
+
+            const prevVideoBtn = document.getElementById('prev-video-page');
+            const nextVideoBtn = document.getElementById('next-video-page');
+            const videoPageNumbers = document.querySelectorAll('.video-page-number');
+            if (prevVideoBtn && nextVideoBtn) {
+                prevVideoBtn.addEventListener('click', () => {
+                    if (currentVideoPage > 1) switchVideoPage(currentVideoPage - 1);
+                });
+                nextVideoBtn.addEventListener('click', () => {
+                    if (currentVideoPage < 3) switchVideoPage(currentVideoPage + 1);
+                });
+                videoPageNumbers.forEach(num => {
+                    num.addEventListener('click', () => {
+                        switchVideoPage(parseInt(num.getAttribute('data-page')));
+                    });
+                });
+            }
+
+            // ---------- 文献页面（合并按钮版） ----------
+            let currentFilter = 'all';
+
+            function generateDocumentFilters() {
+                const filterContainer = document.getElementById('documents-filter');
+                if (!filterContainer) return;
+                const categories = ['all', '科技考古', '文化比较', '工艺技术', '宗教考古',  '文化交流'];
+                const categoryNames = {
+                    'all': '全部', '科技考古': '科技考古', '文化比较': '文化比较', '工艺技术': '工艺技术',
+                    '宗教考古': '宗教考古',
+                    '文化交流': '文化交流'
+                };
+                categories.forEach(cat => {
+                    const btn = document.createElement('button');
+                    btn.className = `filter-btn ${cat === 'all' ? 'active' : ''}`;
+                    btn.textContent = categoryNames[cat] || cat;
+                    btn.setAttribute('data-category', cat);
+                    btn.addEventListener('click', () => {
+                        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        currentFilter = cat;
+                        generateDocumentsGrid();
+                    });
+                    filterContainer.appendChild(btn);
+                });
+            }
+
+            function generateDocumentsGrid() {
+                const grid = document.getElementById('documents-grid');
+                if (!grid) return;
+                grid.innerHTML = '';
+                let filteredDocs = documents;
+                if (currentFilter !== 'all') {
+                    filteredDocs = documents.filter(d => d.category === currentFilter);
+                }
+                filteredDocs.forEach(doc => {
+                    const card = document.createElement('div');
+                    card.className = 'document-card';
+                    card.innerHTML = `
+                        <div class="document-header">
+                            <span class="document-category">${doc.category}</span>
+                            <h3 class="document-title">${doc.title}</h3>
+                        </div>
+                        <div class="document-body">
+                            <p class="document-abstract">${doc.abstract}</p>
+                            <div class="document-meta">
+                                <div class="meta-item">
+                                    <i class="far fa-calendar"></i>
+                                    <span>${doc.date}</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="far fa-file"></i>
+                                    <span>${doc.pages} 页</span>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="document-footer">
+                            <div class="document-author">
+                                <div class="author-info">
+                                <h4>${doc.author}</h4>
+                                <p>${doc.authorTitle || ''}</p>
+                            </div>
+                        </div>
+                            </div>
+                            <div class="document-actions">
+                                <button class="action-btn pdf-btn" data-pdf="${doc.pdfUrl || '#'}">
+                                    <i class="fas fa-file-pdf"></i><span>查看PDF</span>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+
+                document.querySelectorAll('.pdf-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const pdfUrl = btn.getAttribute('data-pdf');
+                        if (pdfUrl && pdfUrl !== '#') {
+                            window.open(pdfUrl, '_blank');
+                        } else {
+                            alert('PDF文件暂未上传，敬请期待！');
+                        }
+                    });
+                });
+            }
+
+            // ---------- 视频模态框关闭 ----------
+            const videoModal = document.getElementById('video-modal');
+            const modalClose = document.getElementById('video-modal-close');
+            if (modalClose) {
+                modalClose.addEventListener('click', () => {
+                    videoModal.style.display = 'none';
+                    document.getElementById('modal-video').pause();
+                });
+                videoModal.addEventListener('click', (e) => {
+                    if (e.target === videoModal) {
+                        videoModal.style.display = 'none';
+                        document.getElementById('modal-video').pause();
+                    }
+                });
+            }
+
+            // ---------- 初始化 ----------
+            function init() {
+                updateArtifactDisplay();
+                generateVideoPages();
+                generateDocumentFilters();
+                generateDocumentsGrid();
+                switchPage('home');
+            }
+            init();
+        });
+    </script>
+</body
+</html>
+

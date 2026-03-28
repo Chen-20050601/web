@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>深入了解</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Serif SC', 'SimSun', 'STKaiti', serif;
+        }
+
+        :root {
+            --primary-color: #b89b7d; /* 青铜色 */
+            --secondary-color: #d4af37; /* 金色 */
+            --dark-color: #2a4f3d; /* 深铜绿色 */
+            --medium-color: #3a6b5a; /* 中铜绿色 */
+            --light-color: #e8dfc8; /* 米白色 */
+            --accent-color: #8b5a2b; /* 深棕色 */
+            --copper-green: #0F2E17; /* 主绿色 */
+            --copper-green-light: #4a7b6a; /* 浅铜绿色 */
+            --copper-green-dark: #1a3f2d; /* 深铜绿色 */
+        }
+
+        body {
+            background: linear-gradient(135deg, #0F2E17 0%, #0F2E17 50%, #0F2E17 100%);
+            color: var(--light-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* 页面切换容器 */
+        .page-container {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: none;
+        }
+
+        .page-container.active {
+            opacity: 1;
+            transform: translateY(0);
+            display: block;
+            position: relative;
+        }
+
+        /* 顶部主导航 */
+        .main-nav {
+            background: linear-gradient(to bottom, rgba(42, 79, 61, 0.95), rgba(26, 63, 45, 0.9));
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            padding: 15px 0;
+            transition: all 0.3s ease;
+            border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+            top: 0;
+        }
+
+        .main-nav.scrolled {
+            padding: 10px 0;
+            background-color: rgba(26, 63, 45, 0.98);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .main-nav-list {
+            display: flex;
+            list-style: none;
+            gap: 40px;
+        }
+
+        .main-nav-list li a {
+            color: var(--light-color);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            position: relative;
+            padding: 5px 0;
+            cursor: pointer;
+        }
+
+        .main-nav-list li a:hover {
+            color: var(--secondary-color);
+        }
+
+        .main-nav-list li a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background-color: var(--secondary-color);
+            bottom: 0;
+            left: 0;
+            transition: width 0.3s;
+        }
+
+        .main-nav-list li a:hover::after {
+            width: 100%;
+        }
+
+        .main-nav-list li a.active {
+            color: var(--secondary-color);
+        }
+
+        .main-nav-list li a.active::after {
+            width: 100%;
+        }
+
+        /* 英雄区域 */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(rgba(15, 46, 23, 0.85), rgba(15, 46, 23, 0.9)),
+                        url('https://images.unsplash.com/photo-1518655048521-f130df041f66?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            margin-top: 60px;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 30%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 70%, rgba(184, 155, 125, 0.1) 0%, transparent 50%);
+            z-index: 1;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: var(--secondary-color);
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+            letter-spacing: 2px;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+
+        .btn {
+            display: inline-block;
+            background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+            color: var(--light-color);
+            padding: 12px 30px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            background: linear-gradient(to right, var(--secondary-color), var(--primary-color));
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        /* 核心展示区域 */
+        .core-showcase {
+            padding: 100px 0;
+        }
+
+        /* 核心展示内容部分 */
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 60px;
+            color: var(--secondary-color);
+            position: relative;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .content-card {
+            background: linear-gradient(145deg, rgba(58, 107, 90, 0.9), rgba(42, 79, 61, 0.9));
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 50px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border-left: 5px solid var(--primary-color);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .content-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color), var(--primary-color));
+        }
+
+        .content-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        }
+
+        .content-card h3 {
+            color: var(--secondary-color);
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .content-card h3 i {
+            margin-right: 15px;
+            color: var(--primary-color);
+        }
+
+        .content-card p {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+
+        /* 特色内容区样式 */
+        .featured-content {
+            padding: 100px 0;
+        }
+
+        .featured-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .featured-card {
+            background: linear-gradient(145deg, rgba(58, 107, 90, 0.9), rgba(42, 79, 61, 0.9));
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .featured-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .featured-img {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+        }
+        .featured-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        .featured-img::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1;
+        }
+
+        .featured-img::after {
+            content: attr(data-text);  /* 从 data-text 属性获取文字 */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--secondary-color);
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 2;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .featured-img:hover::before,
+        .featured-img:hover::after {
+            opacity: 1;
+        }
+
+        .featured-card:hover .featured-img img {
+            transform: scale(1.1);
+        }
+
+
+
+        .featured-info {
+            padding: 25px;
+        }
+
+        .featured-info h3 {
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .featured-info p {
+            margin-bottom: 20px;
+            color: #ddd;
+        }
+
+        .featured-link {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .featured-link:hover {
+            color: var(--primary-color);
+            transform: translateX(5px);
+        }
+
+        .featured-link i {
+            margin-left: 8px;
+            transition: transform 0.3s;
+        }
+
+        .featured-link:hover i {
+            transform: translateX(5px);
+        }
+
+        /* 页脚 */
+        footer {
+            background: linear-gradient(to bottom, rgba(26, 63, 45, 0.95), rgba(20, 50, 35, 0.98));
+            padding: 50px 0 20px;
+            text-align: center;
+            border-top: 2px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+
+        .footer-section {
+            flex: 1;
+            min-width: 300px;
+            margin-bottom: 30px;
+        }
+
+        .footer-section h3 {
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .footer-link {
+            color: #ffffff;          /* 默认颜色：白色 */
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-link:hover {
+            color: var(--secondary-color);  /* 悬停变为金色 */
+        }
+
+        .copyright {
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+
+        /* 返回顶部按钮 */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: var(--light-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            z-index: 999;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .back-to-top.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            transform: translateY(-5px);
+        }
+
+        /* 装饰性铜绿纹理 */
+        .copper-texture {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.05;
+            background-image:
+                radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.2) 0%, transparent 20%),
+                radial-gradient(circle at 80% 70%, rgba(184, 155, 125, 0.2) 0%, transparent 20%),
+                radial-gradient(circle at 40% 80%, rgba(139, 90, 43, 0.2) 0%, transparent 20%);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .main-nav-list {
+                gap: 20px;
+            }
+
+            .main-nav-list li a {
+                font-size: 1rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .featured-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-content {
+                flex-direction: column;
+            }
+        }
+
+        /* 滚动动画 */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s, transform 0.8s;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 页面标题 */
+        .page-header {
+            text-align: center;
+            padding: 100px 0 30px;
+        }
+
+        .page-title {
+            font-size: 3rem;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .page-subtitle {
+            font-size: 1.2rem;
+            color: var(--light-color);
+            max-width: 800px;
+            margin: 0 auto 40px;
+            line-height: 1.6;
+        }
+
+        .back-to-home {
+            text-align: center;
+            padding: 50px 0 30px;
+        }
+
+        /* 坑位详情页样式 */
+        .pit-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .pit-card {
+            background: linear-gradient(145deg, rgba(58, 107, 90, 0.9), rgba(42, 79, 61, 0.9));
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .pit-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        }
+
+        .pit-info {
+            padding: 25px;
+        }
+
+        .pit-info h3 {
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .pit-info h3 i {
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+
+        .pit-info p {
+            margin-bottom: 15px;
+            color: #ddd;
+        }
+
+        .pit-img {
+            height: 250px;
+            overflow: hidden;
+        }
+
+        .pit-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .pit-card:hover .pit-img img {
+            transform: scale(1.1);
+        }
+
+        /* 分页器样式 */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 50px;
+            gap: 10px;
+        }
+
+        .page-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 5px;
+            background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+            color: var(--light-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .page-btn.active {
+            background: linear-gradient(to right, var(--secondary-color), var(--primary-color));
+            transform: scale(1.1);
+        }
+
+        .page-btn:hover:not(.active) {
+            background: linear-gradient(to right, var(--secondary-color), var(--primary-color));
+            transform: translateY(-3px);
+        }
+
+        /* AI问答样式 */
+        .ai-chat-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: linear-gradient(145deg, rgba(58, 107, 90, 0.9), rgba(42, 79, 61, 0.9));
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .chat-history {
+            height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(26, 63, 45, 0.5);
+            border-radius: 8px;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            border-radius: 8px;
+            max-width: 80%;
+        }
+
+        .user-message {
+            background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .ai-message {
+            background: rgba(42, 79, 61, 0.7);
+        }
+
+        .chat-input-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px 15px;
+            border-radius: 5px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--light-color);
+            font-size: 1rem;
+        }
+
+        .chat-input::placeholder {
+            color: #aaa;
+        }
+
+        .send-btn {
+            padding: 12px 20px;
+            background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+            color: var(--light-color);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .send-btn:hover {
+            background: linear-gradient(to right, var(--secondary-color), var(--primary-color));
+        }
+
+        .typing-indicator {
+            display: none;
+            color: var(--secondary-color);
+            font-style: italic;
+            margin-top: 10px;
+        }
+
+        /* 坑位分页样式 */
+        .pits-page {
+            display: none;
+        }
+
+        .pits-page.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- 纹理背景 -->
+    <div class="copper-texture"></div>
+
+    <!-- 顶部主导航 -->
+    <nav class="main-nav" id="mainNav">
+        <div class="container nav-container">
+            <ul class="main-nav-list">
+                <li><a href="#" class="main-nav-link active" data-page="home">首页</a></li>
+                <li><a href="#" class="main-nav-link" data-page="pits">坑位详情</a></li>
+                <li><a href="#" class="main-nav-link" data-page="ai">AI问答</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 首页 -->
+    <div id="home-page" class="page-container active">
+        <!-- 英雄区域 -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1>三星堆遗址探索</h1>
+                <p>深入了解三星堆遗址的考古发现，探索古蜀文明的辉煌成就与神秘面纱</p>
+                <a href="#" class="btn" id="exploreBtn" data-page="pits">开始探索</a>
+            </div>
+        </section>
+
+        <!-- 特色内容区 -->
+        <section class="featured-content">
+            <div class="container">
+                <h2 class="section-title">探索三星堆</h2>
+                <div class="featured-grid">
+                    <!-- 坑位详情 -->
+                    <div class="featured-card">
+                        <div class="featured-img">
+                            <img src="../images\images.2\祭祀坑.jpg" alt="祭祀坑">
+                        </div>
+                        <div class="featured-info">
+                            <h3>坑位详情</h3>
+                            <p>深入了解三星堆遗址的八个祭祀坑，包括发现时间、出土文物、考古意义等详细信息。</p>
+                            <a href="#" class="featured-link" data-page="pits">探索坑位详情 <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+
+                    <!-- AI问答 -->
+                    <div class="featured-card">
+                        <div class="featured-img">
+                             <img src="../images\images.2\AI.jpg" alt="AI问答">
+                        </div>
+                        <div class="featured-info">
+                            <h3>AI问答</h3>
+                            <p>与AI助手交流，获取关于三星堆遗址、古蜀文明和考古发现的相关问题的专业解答。</p>
+                            <a href="#" class="featured-link" data-page="ai">开始问答 <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- 坑位详情页 -->
+    <div id="pits-page" class="page-container">
+        <!-- 内容区域 -->
+        <section class="core-showcase">
+            <div class="container">
+                <!-- 页面标题 -->
+                <div class="page-header">
+                    <h1 class="page-title">三星堆坑位详情</h1>
+                    <p class="page-subtitle">深入了解三星堆遗址的八个祭祀坑，包括发现时间、出土文物、考古意义等详细信息</p>
+                </div>
+
+                <!-- 坑位详情内容 -->
+                <div class="fade-in">
+                    <h2 class="section-title">三星堆祭祀坑</h2>
+
+                    <!-- 坑位详情页面1 -->
+                    <div id="pits-page-1" class="pits-page active">
+                        <div class="pit-grid">
+                            <!-- 坑位1 -->
+                            <div class="pit-card">
+                                <div class="pit-img">
+                                    <img src="../images\images.2\一号.jpg" alt="一号祭祀坑">
+                                </div>
+                                <div class="pit-info">
+                                    <h3><i class="fas fa-digging"></i> 一号祭祀坑</h3>
+                                    <p><strong>发现时间：</strong>1986年7月</p>
+                                    <p><strong>位置：</strong>三星堆遗址中部</p>
+                                    <p><strong>尺寸：</strong>长4.5米，宽3.3米，深1.5米</p>
+                                    <p><strong>主要出土文物：</strong>青铜立人像、青铜神树、金杖、玉璋、象牙等</p>
+                                    <p><strong>考古意义：</strong>一号坑的发现震惊了世界考古界，出土的青铜立人像高达2.62米，是世界上最大的青铜人像，展现了古蜀国高度发达的青铜铸造技术。</p>
+                                </div>
+                            </div>
+
+                            <!-- 坑位2 -->
+                            <div class="pit-card">
+                                <div class="pit-img">
+                                    <img src="../images\images.2\二号.jpg" alt="二号祭祀坑">
+                                </div>
+                                <div class="pit-info">
+                                    <h3><i class="fas fa-digging"></i> 二号祭祀坑</h3>
+                                    <p><strong>发现时间：</strong>1986年8月</p>
+                                    <p><strong>位置：</strong>一号坑东南约30米处</p>
+                                    <p><strong>尺寸：</strong>长5.3米，宽2.3米，深1.6米</p>
+                                    <p><strong>主要出土文物：</strong>青铜面具、青铜太阳形器、青铜神坛、金面罩、玉琮等</p>
+                                    <p><strong>考古意义：</strong>二号坑出土了大量青铜面具，其中最大的纵目面具宽1.38米，造型奇特，可能与古蜀人的神灵崇拜有关，为研究古蜀宗教信仰提供了重要实物资料。</p>
+                                </div>
+                            </div>
+
+                            <!-- 坑位3 -->
+                            <div class="pit-card">
+                                <div class="pit-img">
+                                    <img src="../images\images.2\三号.jpg" alt="三号祭祀坑">
+                                </div>
+                                <div class="pit-info">
+                                    <h3><i class="fas fa-digging"></i> 三号祭祀坑</h3>
+                                    <p><strong>发现时间：</strong>2019年12月</p>
+                                    <p><strong>位置：</strong>一号坑和二号坑附近</p>
+                                    <p><strong>尺寸：</strong>长约3.5米，宽约2.5米</p>
+                                    <p><strong>主要出土文物：</strong>大型青铜面具、黄金面具、象牙、玉器等</p>
+                                    <p><strong>考古意义：</strong>三号坑是2019-2022年新发现的6个祭祀坑之一，出土了完整的黄金面具，重约280克，是迄今为止中国发现的同时期最大的黄金面具。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 坑位详情页面2 -->
+                    <div id="pits-page-2" class="pits-page">
+                        <div class="pit-grid">
+                            <!-- 坑位4 -->
+                            <div class="pit-card">
+                                <div class="pit-img">
+                                    <img src="../images\images.2\四号.jpg" alt="四号祭祀坑">
+                                </div>
+                                <div class="pit-info">
+                                    <h3><i class="fas fa-digging"></i> 四号祭祀坑</h3>
+                                    <p><strong>发现时间：</strong>2020年</p>
+                                    <p><strong>位置：</strong>三号坑附近</p>
+                                    <p><strong>尺寸：</strong>长约3.8米，宽约2.6米</p>
+                                    <p><strong>主要出土文物：</strong>青铜器、玉器、象牙等</p>
+                                    <p><strong>考古意义：</strong>四号坑出土的文物种类丰富，包括青铜器、玉器和象牙等，反映了古蜀国祭祀活动的多样性和复杂性。</p>
+                                </div>
+                            </div>
+
+                            <!-- 坑位5 -->
+                            <div class="pit-card">
+                                <div class="pit-img">
+                                    <img src="../images\images.2\五号.jpg" alt="五号祭祀坑">
+                                </div>
+                                <div class="pit-info">
+                                    <h3><i class="fas fa-digging"></i> 五号祭祀坑</h3>
+                                    <p><strong>发现时间：</strong>2020年</p>
+                                    <p><strong>位置：</strong>四号坑附近</p>
+                                    <p><strong>尺寸：</strong>长约2.8米，宽约2.2米</p>
+                                    <p><strong>主要出土文物：</strong>大量黄金制品、玉器、象牙等</p>
+                                    <p><strong>考古意义：</strong>五号坑出土了大量黄金制品，包括金箔、金片等，表明古蜀国拥有发达的黄金加工技术，黄金在古蜀祭祀活动中占有重要地位。</p>
+                                </div>
+                            </div>
+
+                            <!-- 坑位6 -->
+                            <div class="pit-card">
+                                <div class="pit-img">
+                                    <img src="../images\images.2\六号.jpg" alt="六号祭祀坑">
+                                </div>
+                                <div class="pit-info">
+                                    <h3><i class="fas fa-digging"></i> 六号祭祀坑</h3>
+                                    <p><strong>发现时间：</strong>2021年</p>
+                                    <p><strong>位置：</strong>五号坑附近</p>
+                                    <p><strong>尺寸：</strong>长约3.2米，宽约2.1米</p>
+                                    <p><strong>主要出土文物：</strong>青铜器、玉器、陶器等</p>
+                                    <p><strong>考古意义：</strong>六号坑出土的文物组合独特，包括青铜器、玉器和陶器等，为研究古蜀国祭祀仪式的演变提供了重要线索。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 坑位详情页面3 -->
+                    <div id="pits-page-3" class="pits-page">
+                        <div class="pit-grid">
+                            <!-- 坑位7 -->
+                            <div class="pit-card">
+                                <div class="pit-img">
+                                    <img src="../images\images.2\七号.jpg" alt="七号祭祀坑">
+                                </div>
+                                <div class="pit-info">
+                                    <h3><i class="fas fa-digging"></i> 七号祭祀坑</h3>
+                                    <p><strong>发现时间：</strong>2021年</p>
+                                    <p><strong>位置：</strong>六号坑附近</p>
+                                    <p><strong>尺寸：</strong>长约3.5米，宽约2.4米</p>
+                                    <p><strong>主要出土文物：</strong>青铜器、玉器、象牙等</p>
+                                    <p><strong>考古意义：</strong>七号坑出土的文物保存完好，包括精美的青铜器和玉器，为研究古蜀国的艺术风格和工艺技术提供了重要实物资料。</p>
+                                </div>
+                            </div>
+
+                            <!-- 坑位8 -->
+                            <div class="pit-card">
+                                <div class="pit-img">
+                                    <img src="../images\images.2\八号.jpg" alt="八号祭祀坑">
+                                </div>
+                                <div class="pit-info">
+                                    <h3><i class="fas fa-digging"></i> 八号祭祀坑</h3>
+                                    <p><strong>发现时间：</strong>2021年</p>
+                                    <p><strong>位置：</strong>七号坑附近</p>
+                                    <p><strong>尺寸：</strong>长约4.2米，宽约3.1米</p>
+                                    <p><strong>主要出土文物：</strong>青铜器、玉器、金器、象牙等</p>
+                                    <p><strong>考古意义：</strong>八号坑是三星堆遗址最新发现的祭祀坑，出土了大量珍贵文物，包括青铜器、玉器、金器和象牙等，为研究古蜀文明的衰落原因提供了重要线索。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 分页器 -->
+                    <div class="pagination">
+                        <div class="page-btn active" data-page="1">1</div>
+                        <div class="page-btn" data-page="2">2</div>
+                        <div class="page-btn" data-page="3">3</div>
+                    </div>
+                </div>
+
+                <!-- 返回首页 -->
+                <div class="back-to-home">
+                    <a href="#" class="btn" data-page="home"><i class="fas fa-home"></i> 返回首页</a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- AI问答页 -->
+    <div id="ai-page" class="page-container">
+        <!-- 内容区域 -->
+        <section class="core-showcase">
+            <div class="container">
+                <!-- 页面标题 -->
+                <div class="page-header">
+                    <h1 class="page-title">AI问答</h1>
+                    <p class="page-subtitle">与AI助手交流，获取关于三星堆遗址、古蜀文明和考古发现的相关问题的专业解答</p>
+                </div>
+
+                <!-- AI问答内容 -->
+                <div class="fade-in">
+                    <h2 class="section-title">三星堆AI助手</h2>
+
+                    <div class="ai-chat-container">
+                        <div class="chat-history" id="chatHistory">
+                            <div class="message ai-message">
+                                <p>您好！我是三星堆AI助手，可以回答您关于三星堆遗址、古蜀文明和考古发现的相关问题。请问您想了解什么？</p>
+                            </div>
+                        </div>
+
+                        <div class="chat-input-container">
+                            <input type="text" class="chat-input" id="chatInput" placeholder="请输入您的问题...">
+                            <button class="send-btn" id="sendBtn">发送</button>
+                        </div>
+
+                        <div class="typing-indicator" id="typingIndicator">
+                            <p>AI正在思考中...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 返回首页 -->
+                <div class="back-to-home">
+                    <a href="#" class="btn" data-page="home"><i class="fas fa-home"></i> 返回首页</a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+
+                </div>
+                <div class="footer-section">
+                    <h3>三星堆探索</h3>
+                    <p>深入了解三星堆遗址的考古发现，探索古蜀文明的辉煌成就与神秘面纱。</p>
+                </div>
+                <div class="footer-section">
+                   <h3>快速链接</h3>
+                    <ul style="list-style: none; line-height: 2;">
+                        <li><a href="#" class="footer-link" data-page="home">首页</a></li>
+                        <li><a href="#" class="footer-link" data-page="pits">坑位详情</a></li>
+                        <li><a href="#" class="footer-link" data-page="ai">AI问答</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+
+            </div>
+        </div>
+    </footer>
+
+    <!-- 返回顶部按钮 -->
+    <div class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <script>
+        // DOM加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            // 页面切换功能
+            const pageContainers = {
+                'home': document.getElementById('home-page'),
+                'pits': document.getElementById('pits-page'),
+                'ai': document.getElementById('ai-page')
+            };
+
+            const navLinks = document.querySelectorAll('.main-nav-link, .featured-link, .footer-link, .btn[data-page]');
+
+            // 页面切换函数
+            function switchPage(pageId) {
+                // 隐藏所有页面
+                Object.values(pageContainers).forEach(container => {
+                    if (container) {
+                        container.classList.remove('active');
+                    }
+                });
+
+                // 显示目标页面
+                if (pageContainers[pageId]) {
+                    pageContainers[pageId].classList.add('active');
+
+                    // 滚动到顶部
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+
+                    // 触发滚动动画
+                    setTimeout(() => {
+                        const fadeElements = pageContainers[pageId].querySelectorAll('.fade-in');
+                        fadeElements.forEach(element => {
+                            element.classList.add('visible');
+                        });
+                    }, 300);
+                }
+
+                // 更新导航栏激活状态
+                document.querySelectorAll('.main-nav-link').forEach(link => {
+                    if (link.getAttribute('data-page') === pageId) {
+                        link.classList.add('active');
+                    } else {
+                        link.classList.remove('active');
+                    }
+                });
+            }
+
+            // 为所有链接添加点击事件
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const pageId = this.getAttribute('data-page');
+                    if (pageId) {
+                        switchPage(pageId);
+                    }
+                });
+            });
+
+            // 探索按钮特殊处理
+            const exploreBtn = document.getElementById('exploreBtn');
+            if (exploreBtn) {
+                exploreBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const pageId = this.getAttribute('data-page');
+                    switchPage(pageId);
+                });
+            }
+
+            // 坑位详情分页功能
+            const pageBtns = document.querySelectorAll('.page-btn');
+            const pitPages = document.querySelectorAll('.pits-page');
+
+            pageBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const pageNum = this.getAttribute('data-page');
+
+                    // 更新分页按钮状态
+                    pageBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+
+                    // 显示对应的坑位页面
+                    pitPages.forEach(page => {
+                        page.classList.remove('active');
+                        if (page.id === `pits-page-${pageNum}`) {
+                            page.classList.add('active');
+                        }
+                    });
+                });
+            });
+
+            // AI问答功能
+            const chatInput = document.getElementById('chatInput');
+            const sendBtn = document.getElementById('sendBtn');
+            const chatHistory = document.getElementById('chatHistory');
+            const typingIndicator = document.getElementById('typingIndicator');
+
+            // AI回答库
+            const aiResponses = {
+                '三星堆': '三星堆遗址位于四川省广汉市，是古蜀文明的重要遗址，距今约4800-2600年。遗址发现了八个祭祀坑，出土了大量青铜器、玉器、金器和象牙等珍贵文物。',
+                '青铜立人像': '青铜立人像出土于一号祭祀坑，高2.62米，是世界上最大的青铜人像。它头戴高冠，身穿三层衣服，双手握成环状，可能持有某种器物，是古蜀国神权政治的象征。',
+                '青铜神树': '青铜神树出土于二号祭祀坑，高3.96米，是中国迄今为止发现的最大的青铜文物。神树分为三层，每层三枝，枝上站立着太阳神鸟，反映了古蜀人的太阳崇拜和神树崇拜。',
+                '黄金面具': '黄金面具出土于三号祭祀坑，重约280克，是迄今为止中国发现的同时期最大的黄金面具。面具造型威严，可能与古蜀王的形象或神灵崇拜有关。',
+                '祭祀坑': '三星堆遗址共发现八个祭祀坑，这些坑可能是古蜀人举行大型祭祀活动后埋藏祭品的场所。坑中出土的文物种类丰富，包括青铜器、玉器、金器、象牙等，反映了古蜀国高度发达的文明。',
+                '古蜀文明': '古蜀文明是长江上游地区的重要古代文明，以三星堆遗址和金沙遗址为代表。古蜀国是一个神权国家，拥有发达的青铜铸造技术、玉器加工技术和黄金加工技术。',
+                '默认': '关于您的问题，我可以提供以下信息：三星堆遗址是中国重要的考古发现，出土了大量珍贵文物，反映了古蜀国高度发达的文明。如果您有更具体的问题，请详细描述，我会尽力为您解答。'
+            };
+
+            // 发送消息函数
+            function sendMessage() {
+                const message = chatInput.value.trim();
+                if (message === '') return;
+
+                // 添加用户消息
+                addMessage(message, 'user');
+
+                // 清空输入框
+                chatInput.value = '';
+
+                // 显示AI正在输入
+                typingIndicator.style.display = 'block';
+
+                // 模拟AI思考时间
+                setTimeout(() => {
+                    typingIndicator.style.display = 'none';
+
+                    // 生成AI回复
+                    let response = aiResponses['默认'];
+                    for (const keyword in aiResponses) {
+                        if (message.includes(keyword)) {
+                            response = aiResponses[keyword];
+                            break;
+                        }
+                    }
+
+                    // 添加AI消息
+                    addMessage(response, 'ai');
+                }, 1500);
+            }
+
+            // 添加消息到聊天记录
+            function addMessage(text, sender) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message');
+                messageDiv.classList.add(sender === 'user' ? 'user-message' : 'ai-message');
+
+                const messageText = document.createElement('p');
+                messageText.textContent = text;
+
+                messageDiv.appendChild(messageText);
+                chatHistory.appendChild(messageDiv);
+
+                // 滚动到底部
+                chatHistory.scrollTop = chatHistory.scrollHeight;
+            }
+
+            // 发送按钮点击事件
+            sendBtn.addEventListener('click', sendMessage);
+
+            // 输入框回车事件
+            chatInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+
+            // 滚动时改变导航样式
+            window.addEventListener('scroll', function() {
+                const mainNav = document.getElementById('mainNav');
+                const backToTop = document.getElementById('backToTop');
+
+                if (window.scrollY > 100) {
+                    if (mainNav) mainNav.classList.add('scrolled');
+                } else {
+                    if (mainNav) mainNav.classList.remove('scrolled');
+                }
+
+                // 显示/隐藏返回顶部按钮
+                if (window.scrollY > 500) {
+                    if (backToTop) backToTop.classList.add('active');
+                } else {
+                    if (backToTop) backToTop.classList.remove('active');
+                }
+
+                // 滚动动画
+                const activePage = document.querySelector('.page-container.active');
+                if (activePage) {
+                    const fadeElements = activePage.querySelectorAll('.fade-in');
+                    fadeElements.forEach(element => {
+                        const elementTop = element.getBoundingClientRect().top;
+                        const windowHeight = window.innerHeight;
+
+                        if (elementTop < windowHeight - 100) {
+                            element.classList.add('visible');
+                        }
+                    });
+                }
+            });
+
+            // 返回顶部功能
+            const backToTop = document.getElementById('backToTop');
+            if (backToTop) {
+                backToTop.addEventListener('click', function() {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                });
+            }
+
+            // 初始化页面
+            switchPage('home');
+        });
+    </script>
+</body>
+</html>

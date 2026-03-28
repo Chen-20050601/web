@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>博物馆推荐</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #b89b7d;
+            --secondary-color: #d4af37;
+            --dark-color: #2a4f3d;
+            --light-color: #e8dfc8;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Serif SC', 'SimSun', serif;
+        }
+        
+        body {
+            background-color: #0F2E17;
+            color: var(--light-color);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* 导航栏 */
+        .navbar {
+            background: linear-gradient(to bottom, rgba(42, 79, 61, 0.95), rgba(26, 63, 45, 0.9));
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            padding: 15px 0;
+            transition: all 0.3s;
+            border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+        }
+        
+        .navbar.scrolled {
+            padding: 10px 0;
+            background-color: rgba(26, 63, 45, 0.98);
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--secondary-color);
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+        
+        .nav-links li a {
+            color: var(--light-color);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            position: relative;
+            padding: 5px 0;
+        }
+        
+        .nav-links li a:hover {
+            color: var(--secondary-color);
+        }
+        
+        .nav-links li a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background-color: var(--secondary-color);
+            bottom: 0;
+            left: 0;
+            transition: width 0.3s;
+        }
+        
+        .nav-links li a:hover::after {
+            width: 100%;
+        }
+        
+        /* 页面容器 */
+        .page {
+            display: none;
+            padding-top: 80px;
+            min-height: 100vh;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        /* 英雄区域 */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(rgba(15, 46, 23, 0.85), rgba(15, 46, 23, 0.9)), 
+                        url('https://images.unsplash.com/photo-1580476262796-b1b78cb6d9d4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: var(--secondary-color);
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+        }
+        
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: var(--light-color);
+            padding: 12px 30px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+        
+        /* 主要内容区 */
+        .section {
+            padding: 100px 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 60px;
+            color: var(--secondary-color);
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        /* 信息卡片 */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .info-card {
+            background: linear-gradient(145deg, rgba(58, 107, 90, 0.9), rgba(42, 79, 61, 0.9));
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border-left: 5px solid var(--primary-color);
+            transition: all 0.3s;
+        }
+        
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        }
+        
+        .info-card h3 {
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .info-card h3 i {
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+        
+        /* 地图容器 */
+        .map-container {
+            height: 300px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 20px;
+            background: #2a4f3d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--light-color);
+        }
+        
+        .map-container i {
+            font-size: 3rem;
+            margin-right: 15px;
+        }
+        
+        /* 交通方式列表 */
+        .transport-list {
+            list-style: none;
+        }
+        
+        .transport-list li {
+            margin-bottom: 15px;
+            padding-left: 30px;
+            position: relative;
+        }
+        
+        .transport-list li i {
+            position: absolute;
+            left: 0;
+            top: 5px;
+            color: var(--primary-color);
+        }
+        
+        /* 参观信息详情 */
+        .visit-details {
+            margin-top: 20px;
+        }
+        
+        .detail-item {
+            margin-bottom: 15px;
+        }
+        
+        .detail-item h4 {
+            color: var(--secondary-color);
+            margin-bottom: 5px;
+        }
+        
+        /* 参观指南 */
+        .guide {
+            background: linear-gradient(to right, rgba(58, 107, 90, 0.8), rgba(42, 79, 61, 0.8));
+            border-radius: 10px;
+            padding: 40px;
+            margin-top: 50px;
+        }
+        
+        .guide-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        
+        .guide-item {
+            text-align: center;
+            padding: 20px;
+            background: rgba(42, 79, 61, 0.5);
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .guide-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .guide-item i {
+            font-size: 2.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+        }
+        
+        .guide-item h4 {
+            margin-bottom: 10px;
+            color: var(--secondary-color);
+        }
+        
+        /* 历史时间轴 */
+        .timeline {
+            position: relative;
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 20px 0;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(to bottom, var(--primary-color), var(--secondary-color), var(--primary-color));
+            transform: translateX(-50%);
+        }
+        
+        .timeline-item {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            margin-bottom: 60px;
+            position: relative;
+            width: 100%;
+        }
+        
+        .timeline-content {
+            width: 45%;
+            background: linear-gradient(145deg, rgba(58, 107, 90, 0.9), rgba(42, 79, 61, 0.9));
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border-left: 4px solid var(--secondary-color);
+            position: relative;
+        }
+        
+        .timeline-item:nth-child(odd) .timeline-content {
+            text-align: right;
+            border-left: none;
+            border-right: 4px solid var(--secondary-color);
+        }
+        
+        .timeline-content h4 {
+            color: var(--secondary-color);
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+        }
+        
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: var(--secondary-color);
+            border: 4px solid var(--primary-color);
+            border-radius: 50%;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        }
+        
+        .timeline-year {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: var(--light-color);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            white-space: nowrap;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* 页脚 */
+        footer {
+            background: linear-gradient(to bottom, rgba(26, 63, 45, 0.95), rgba(20, 50, 35, 0.98));
+            padding: 30px 0;
+            text-align: center;
+            border-top: 2px solid rgba(212, 175, 55, 0.3);
+        }
+        
+        .copyright {
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+        
+        /* 返回顶部按钮 */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--light-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            z-index: 999;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .back-to-top.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .back-to-top:hover {
+            transform: translateY(-5px);
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .nav-links {
+                gap: 15px;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .guide-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .timeline::before {
+                left: 20px;
+            }
+            
+            .timeline-item {
+                width: 100%;
+                padding-left: 50px;
+                padding-right: 0;
+            }
+            
+            .timeline-content {
+                width: 100%;
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+            
+            .timeline-item::after {
+                left: 12px;
+            }
+            
+            .timeline-year {
+                left: 20px;
+                transform: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <a href="#" class="logo" data-page="home">三星堆博物馆</a>
+            <ul class="nav-links">
+                <li><a href="#" data-page="home">首页</a></li>
+                <li><a href="#" data-page="visit">参观指南</a></li>
+                <li><a href="#" data-page="history">历史背景</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 首页 -->
+    <div id="home-page" class="page active">
+        <!-- 英雄区域 -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1>探索神秘的三星堆文明</h1>
+                <p>三星堆遗址是迄今在西南地区发现的范围最大、延续时间最长、文化内涵最丰富的古城、古国、古蜀文化遗址，距今已有5000至3000年历史。</p>
+                <a href="#" class="btn" data-page="visit">开始参观</a>
+            </div>
+        </section>
+    </div>
+
+    <!-- 参观指南页 -->
+    <div id="visit-page" class="page">
+        <section class="section">
+            <div class="container">
+                <h2 class="section-title">参观指南</h2>
+                
+                <div class="info-grid">
+                <div class="info-card">
+                    <h3><i class="fas fa-map-marker-alt"></i> 博物馆位置</h3>
+                    <p>四川省广汉市西安路133号</p>
+                    <p>邮政编码：618300</p>
+                    <p>联系电话：0838-5651526</p>
+                    
+                    <div class="visit-details">
+                        <div class="detail-item">
+                            <h4>地理位置</h4>
+                            <p>三星堆博物馆位于成都平原北部，广汉市西北的鸭子河南岸，距离成都市中心约40公里，距离广汉市区约7公里。</p>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <h4>周边环境</h4>
+                            <p>博物馆周边环境优美，东临鸭子河，西靠三星堆遗址保护区，北接广汉市区，南望成都平原。馆区内绿树成荫，环境宜人。</p>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <h3><i class="fas fa-subway"></i> 出行方式</h3>
+                    <ul class="transport-list">
+                        <li><i class="fas fa-train"></i> 高铁：成都东站至广汉北站，车程约18分钟，票价约15元</li>
+                        <li><i class="fas fa-bus"></i> 公交：成都昭觉寺汽车站有直达三星堆的旅游专线，车程约1小时，票价15元</li>
+                        <li><i class="fas fa-car"></i> 自驾：从成都出发沿成绵高速至广汉出口，约1小时车程</li>
+                        <li><i class="fas fa-taxi"></i> 出租车：从广汉市区打车约15分钟，费用约20元</li>
+                        <li><i class="fas fa-bicycle"></i> 骑行：广汉市区有共享单车，骑行约30分钟</li>
+                        <li><i class="fas fa-walking"></i> 步行：从最近的公交站步行约10分钟</li>
+                    </ul>
+                    
+                    <div class="visit-details">
+                        <div class="detail-item">
+                            <h4>停车场信息</h4>
+                            <p>博物馆设有大型停车场，可容纳300辆车，收费标准：5元/小时，全天最高30元。</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <h3><i class="fas fa-info-circle"></i> 参观信息</h3>
+                    <div class="visit-details">
+                        <div class="detail-item">
+                            <h4>开放时间</h4>
+                            <p>全年开放 8:30-18:00（17:00停止售票）</p>
+                            <p>建议参观时间：上午9:00-11:30，下午14:00-16:30</p>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <h4>门票信息</h4>
+                            <p>普通票：72元/人</p>
+                            <p>学生票：36元/人（需出示有效学生证）</p>
+                            <p>老人票：36元/人（60岁以上老人）</p>
+                            <p>儿童票：免费（1.2米以下儿童）</p>
+                            <p>团体票：60元/人（10人以上团体）</p>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <h4>讲解服务</h4>
+                            <p>中文讲解：100元/次（1-10人）</p>
+                            <p>英文讲解：150元/次（1-10人）</p>
+                            <p>自助讲解器：20元/台</p>
+                            <p>讲解时长：约1.5小时</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+
+                <div class="guide">
+                    <h3 style="text-align: center; margin-bottom: 30px; color: var(--secondary-color);">参观小贴士</h3>
+                    <div class="guide-grid">
+                        <div class="guide-item">
+                            <i class="fas fa-clock"></i>
+                            <h4>最佳参观时间</h4>
+                            <p>建议上午9点前到达，避开人流高峰</p>
+                        </div>
+                        
+                        <div class="guide-item">
+                            <i class="fas fa-camera"></i>
+                            <h4>拍照须知</h4>
+                            <p>可以拍照，但禁止使用闪光灯</p>
+                        </div>
+                        
+                        <div class="guide-item">
+                            <i class="fas fa-utensils"></i>
+                            <h4>餐饮服务</h4>
+                            <p>馆内设有餐厅和咖啡厅</p>
+                        </div>
+                        
+                        <div class="guide-item">
+                            <i class="fas fa-wheelchair"></i>
+                            <h4>无障碍设施</h4>
+                            <p>提供轮椅租借服务</p>
+                        </div>
+                        
+                        <div class="guide-item">
+                            <i class="fas fa-shopping-bag"></i>
+                            <h4>纪念品商店</h4>
+                            <p>馆内设有特色纪念品商店</p>
+                        </div>
+                        
+                        <div class="guide-item">
+                            <i class="fas fa-user-friends"></i>
+                            <h4>团体参观</h4>
+                            <p>10人以上团体可提前预约</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- 历史背景页 -->
+    <div id="history-page" class="page">
+        <section class="section">
+            <div class="container">
+                <h2 class="section-title">历史背景</h2>
+                
+                <div class="info-card">
+                    <h3><i class="fas fa-history"></i> 三星堆遗址</h3>
+                    <p>三星堆遗址位于中国四川省广汉市西北的鸭子河南岸，分布面积12平方公里，距今已有5000至3000年历史，是迄今在西南地区发现的范围最大、延续时间最长、文化内涵最丰富的古城、古国、古蜀文化遗址。</p>
+                    <p>遗址发现于1929年，1934年开始考古发掘，1980年后系统发掘。遗址内存在三种面貌不同但又连续发展的三期考古学文化，即以成都平原龙山时代至夏代遗址群为代表的一期文化，又称"宝墩文化"；以商代三星堆规模宏大的古城和高度发达的青铜文明为代表的二期文化；以商末至西周早期三星堆废弃古城时期为代表的三期文化，即成都"十二桥文化"。</p>
+                    
+                    <h4 style="margin-top: 20px; color: var(--secondary-color);">重要考古发现</h4>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>1929年：当地农民燕道诚在挖水沟时发现一坑玉石器</li>
+                        <li>1934年：华西大学博物馆馆长葛维汉进行首次考古发掘</li>
+                        <li>1986年：发现一、二号祭祀坑，出土大量青铜器、玉器、金器</li>
+                        <li>2019-2022年：新发现三至八号祭祀坑，出土前所未见珍贵文物</li>
+                    </ul>
+                </div>
+                
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4>新石器时代晚期</h4>
+                            <p>三星堆文化开始形成，出现原始聚落和农业生产活动，为古蜀文明的萌芽期。这一时期的三星堆遗址出土了大量石器、陶器和骨器，展现了古蜀人早期的生产生活方式。</p>
+                        </div>
+                        <div class="timeline-year">公元前3000-2000年</div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4>夏商时期</h4>
+                            <p>三星堆文明达到鼎盛，出现大型城址、青铜铸造技术和独特的祭祀体系。这一时期出土了大量精美的青铜器、金器和玉器，包括青铜立人像、青铜神树、黄金面具等珍贵文物，展现了古蜀人高超的工艺水平和独特的艺术风格。</p>
+                        </div>
+                        <div class="timeline-year">公元前2000-1000年</div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-content">
+                            <h4>商周之际</h4>
+                            <p>三星堆古城逐渐衰落，文化中心向成都平原转移，形成十二桥文化。这一时期的三星堆遗址出土文物数量减少，风格也发生了变化，反映了古蜀文明的发展和变迁。</p>
+                        </div>
+                        <div class="timeline-year">公元前1000年左右</div>
+                    </div>
+                </div>
+                
+                <div class="info-card" style="margin-top: 30px;">
+                    <h3><i class="fas fa-landmark"></i> 博物馆历史</h3>
+                    <p>三星堆博物馆位于全国重点文物保护单位三星堆遗址东北角，地处历史文化名城广汉城西鸭子河畔，南距成都40公里，北距德阳26公里，是我国一座现代化的专题性遗址博物馆。</p>
+                    <p>博物馆于1992年8月奠基，1997年10月建成开放，馆区占地面积约530亩，第一展馆面积4200平方米，第二展馆面积7000平方米，游客接待中心建筑总面积2600平方米。</p>
+                    
+                    <h4 style="margin-top: 20px; color: var(--secondary-color);">建筑特色</h4>
+                    <p>博物馆建筑采用现代设计手法，融合古蜀文化元素，外观呈螺旋上升的曲线造型，象征古蜀文明的神秘与辉煌。馆内展陈设计科学合理，采用先进的文物保护技术和展示手段。</p>
+                    
+                    <h4 style="margin-top: 20px; color: var(--secondary-color);">馆藏精品</h4>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>青铜立人像：高达2.62米，是世界上最大的青铜人像</li>
+                        <li>青铜神树：高达3.95米，装饰精美，工艺复杂</li>
+                        <li>黄金面具：制作精美，展现了高超的金属加工技术</li>
+                        <li>青铜纵目面具：造型奇特，可能是古蜀人崇拜的神灵形象</li>
+                        <li>玉璋、玉琮：精美的玉器，反映了古蜀人的礼仪制度</li>
+                    </ul>
+                </div>
+                
+                <div class="info-card" style="margin-top: 30px;">
+                    <h3><i class="fas fa-globe-asia"></i> 文化意义</h3>
+                    <p>三星堆遗址的发现，证明了长江流域与黄河流域一样，同是中华民族的发祥地，是中华文明的重要组成部分。三星堆文明展现了古蜀人独特的宇宙观、宗教信仰和艺术创造力，对研究中国古代文明具有重要意义。</p>
+                    
+                    <h4 style="margin-top: 20px; color: var(--secondary-color);">世界影响</h4>
+                    <p>三星堆文物曾在世界多个国家展出，引起了国际考古学界和公众的广泛关注。其独特的文化面貌和高度发达的青铜文明，为研究古代文明交流提供了重要实物资料。</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+
+        </div>
+    </footer>
+
+    <!-- 返回顶部按钮 -->
+    <div class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <script>
+        // 导航栏滚动效果
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            const backToTop = document.getElementById('backToTop');
+            
+            if (window.scrollY > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+            
+            if (window.scrollY > 500) {
+                backToTop.classList.add('active');
+            } else {
+                backToTop.classList.remove('active');
+            }
+        });
+        
+        // 返回顶部功能
+        document.getElementById('backToTop').addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        
+        // 页面切换功能
+        const pages = {
+            'home': document.getElementById('home-page'),
+            'visit': document.getElementById('visit-page'),
+            'history': document.getElementById('history-page')
+        };
+        
+        const navLinks = document.querySelectorAll('[data-page]');
+        
+        function switchPage(pageId) {
+            // 隐藏所有页面
+            Object.values(pages).forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // 显示目标页面
+            if (pages[pageId]) {
+                pages[pageId].classList.add('active');
+                
+                // 滚动到顶部
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            }
+        }
+        
+        // 为所有链接添加点击事件
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const pageId = this.getAttribute('data-page');
+                if (pageId) {
+                    switchPage(pageId);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
