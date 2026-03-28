@@ -12,55 +12,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* 数字化代码边框 */
-        .digital-code-border {
-            position: relative;
-            border: 2px solid #D4AF37;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 10px;
-        }
-
-        .digital-code-border::before,
-        .digital-code-border::after {
-            content: "";
-            position: absolute;
-            width: 22px;
-            height: 22px;
-            border: 2px solid #D4AF37;
-            border-radius: 2px;
-        }
-
-        .digital-code-border::before {
-            top: -2px;
-            left: -2px;
-            border-right: none;
-            border-bottom: none;
-        }
-
-        .digital-code-border::after {
-            bottom: -2px;
-            right: -2px;
-            border-left: none;
-            border-top: none;
-        }
-
-        .scan-line {
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.12), transparent);
-            animation: scan 6.5s infinite linear;
-            z-index: 0;
-        }
-
-        @keyframes scan {
-            0% { left: -100%; }
-            100% { left: 100%; }
-        }
-
         /* 返回顶部 */
         .back-to-top {
             position: fixed;
@@ -99,7 +50,7 @@
             scroll-behavior: smooth;
         }
 
-        /* 全局重置 */
+        /* 全局样式 */
         * {
             margin: 0;
             padding: 0;
@@ -113,6 +64,9 @@
         a {
             color: #D9D207 !important;
             text-decoration: none !important;
+            display: block;
+            width: 100%;
+            height: 100%;
         }
 
         body {
@@ -226,15 +180,7 @@
             border-radius: 15px;
         }
 
-        .row {
-            margin: 0 -5px !important;
-        }
-        .row > [class*="col-"] {
-            padding: 0 5px !important;
-            margin-bottom: 10px;
-        }
-
-        /* 要闻列表 —— 修复跳转层级 */
+        /* 要闻列表 */
         .list {
             background: #fff;
             padding: 10px;
@@ -249,9 +195,6 @@
         }
 
         .list li a {
-            display:block;
-            width:100%;
-            height:100%;
             font-size: 16px;
             color: #d1af74 !important;
             text-indent: 15px;
@@ -264,15 +207,24 @@
             font-weight: bold;
         }
 
-        /* 经典展品 4*2 布局样式 */
+        /* 经典展品 4×2 布局 */
         .gc {
             background: transparent !important;
             padding: 0 !important;
             margin: 0 auto !important;
         }
 
+        .gc .row {
+            display: flex;
+            flex-wrap: nowrap;
+            margin: 0 -5px !important;
+        }
+
         .gc .col-3 {
+            flex: 0 0 25%;
+            max-width: 25%;
             height: 280px;
+            padding: 0 5px !important;
             position: relative;
         }
 
@@ -357,124 +309,111 @@
 </head>
 
 <body>
-    <div class="digital-code-border">
-        <div class="scan-line"></div>
+    <!-- 导航 -->
+    <div class="nav">
+        <ul>
+            <li><a href="../html/核心展示.html" target="_blank">核心展示内容</a></li>
+            <li><a href="../html/数字化体验.html" target="_blank">数字化体验</a></li>
+            <li><a href="#">三星堆数字博物馆</a></li>
+            <li><a href="../html/深入了解.html" target="_blank">深入了解</a></li>
+            <li><a href="../html/博物馆推荐.html" target="_blank">博物馆推荐</a></li>
+        </ul>
+    </div>
 
-        <!-- 导航 -->
-        <div class="nav">
-            <ul>
-                <li><a href="../html/核心展示.html" target="_blank">核心展示内容</a></li>
-                <li><a href="../html/数字化体验.html" target="_blank">数字化体验</a></li>
-                <li><a href="#">三星堆数字博物馆</a></li>
-                <li><a href="../html/深入了解.html" target="_blank">深入了解</a></li>
-                <li><a href="../html/博物馆推荐.html" target="_blank">博物馆推荐</a></li>
-            </ul>
-        </div>
+    <!-- 波浪 -->
+    <div class="custom-shape-divider-top-1703553098">
+        <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" class="shape-fill"></path>
+            <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" class="shape-fill"></path>
+            <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" class="shape-fill"></path>
+        </svg>
+    </div>
 
-        <!-- 波浪 -->
-        <div class="custom-shape-divider-top-1703553098">
-            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
-                <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" class="shape-fill"></path>
-                <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" class="shape-fill"></path>
-                <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" class="shape-fill"></path>
-            </svg>
-        </div>
-
-        <!-- 轮播视频 -->
-        <div class="content-slp">
-            <div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel">
-                <ol class="carousel-indicators">
-                    <li data-target="#carouselExampleCaptions" data-slide-to="0" class="active"></li>
-                    <li data-target="#carouselExampleCaptions" data-slide-to="1"></li>
-                    <li data-target="#carouselExampleCaptions" data-slide-to="2"></li>
-                </ol>
-                <div class="carousel-inner">
-                    <div class="carousel-item active">
-                        <video autoplay muted loop playsinline>
-                            <source src="../images/images.2/视频1.mp4" type="video/mp4">
-                        </video>
-                    </div>
-                    <div class="carousel-item">
-                        <video autoplay muted loop playsinline>
-                            <source src="../images/images.2/视频2.mp4" type="video/mp4">
-                        </video>
-                    </div>
-                    <div class="carousel-item">
-                        <video autoplay muted loop playsinline>
-                            <source src="../images/images.2/视频3.mp4" type="video/mp4">
-                        </video>
-                    </div>
+    <!-- 轮播视频 -->
+    <div class="content-slp">
+        <div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel">
+            <ol class="carousel-indicators">
+                <li data-target="#carouselExampleCaptions" data-slide-to="0" class="active"></li>
+                <li data-target="#carouselExampleCaptions" data-slide-to="1"></li>
+                <li data-target="#carouselExampleCaptions" data-slide-to="2"></li>
+            </ol>
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <video autoplay muted loop playsinline>
+                        <source src="../images/images.2/视频1.mp4" type="video/mp4">
+                    </video>
                 </div>
-                <button class="carousel-control-prev" type="button" data-target="#carouselExampleCaptions" data-slide="prev">
-                    <span class="carousel-control-prev-icon"></span>
-                </button>
-                <button class="carousel-control-next" type="button" data-target="#carouselExampleCaptions" data-slide="next">
-                    <span class="carousel-control-next-icon"></span>
-                </button>
-            </div>
-        </div>
-
-        <!-- 要闻（链接已修复） -->
-        <div class="dv"><h3>要闻</h3></div>
-        <div class="container">
-            <div class="row">
-                <div class="col-8 left">
-                    <ul class="list">
-                        <li><a target="_blank" href="https://yangbo.cctv.com/2023/11/15/ARTIY73MXR3G9ZnVXnQb0lMV231115.shtml">走进古文明：三星堆的十件核心文物！</a></li>
-                        <li><a target="_blank" href="https://news.cnr.cn/native/gd/sz/20250621/t20250621_527223032.shtml">习语回响丨不断揭开三星堆的秘密</a></li>
-                        <li><a target="_blank" href="https://sichuan.scol.com.cn/ggxw/202307/58943629.html">总书记来到三星堆——"三星堆遗址考古成果在世界上是叫得响的"</a></li>
-                        <li><a target="_blank" href="https://m.thepaper.cn/baijiahao_26268070">专家分析三星堆青铜器如何铸造</a></li>
-                        <li><a target="_blank" href="https://www.ha.chinanews.com.cn/wap/hnk/2022/0318/41610.shtml">何时形成 何时结束 从年代学看三星堆文明</a></li>
-                        <li><a target="_blank" href="https://www.sc.chinanews.com.cn/whty/2024-03-08/205447.html">三星堆文化瑰宝闪耀世界：探寻古蜀文化遗珍 实证中华文明多元一体</a></li>
-                        <li><a target="_blank" href="https://news.youth.cn/sz/202404/t20240415_15197010.htm">坚定文化自信 建设中华民族现代文明丨三星堆的文化瑰宝</a></li>
-                        <li><a target="_blank" href="https://art.rmlt.com.cn/2026/0127/746175.shtml">三星堆金沙文物齐聚国博，看古蜀文明"双星"闪耀</a></li>
-                        <li><a target="_blank" href="https://news.cnr.cn/native/gd/sz/20250623/t20250623_527226189.shtml">近镜头·习近平的文化足迹｜"期待着更长的中华文明的发现发掘"</a></li>
-                        <li><a target="_blank" href="https://www.qstheory.cn/qshyjx/2024-07/12/c_1130178563.htm">聆听数千年前文明的回响</a></li>
-                        <li><a target="_blank" href="https://m.gmw.cn/2024-10-16/content_1303872856.html">三星堆青铜神树：古蜀先民"通天梦"的现实样本</a></li>
-                        <li><a target="_blank" href="https://epaper.scdaily.cn/shtml/scrb/20241030/1019192.html">在三星堆 看到中华文明多元一体</a></li>
-                        <li><a target="_blank" href="https://www.scge.gov.cn/html/website/outsite/sichuandangxiaobao/2024nian%20di6qi/di7ban%20lilunshiye1790940881453457410/zz1790953577271926785.html">三星堆蕴含的文明特征和文化意蕴</a></li>
-                    </ul>
+                <div class="carousel-item">
+                    <video autoplay muted loop playsinline>
+                        <source src="../images/images.2/视频2.mp4" type="video/mp4">
+                    </video>
                 </div>
-                <div class="col-4 right text-center">
-                    <ul class="list-inline">
-                        <li class="list-inline-item"><img src="../images/images.2/长图.png" class="img-fluid"><br>包罗万象</li>
-                        <li class="list-inline-item"><img src="../images/images.2/青铜头.JPG" class="img-fluid"><br>神秘震撼</li>
-                    </ul>
+                <div class="carousel-item">
+                    <video autoplay muted loop playsinline>
+                        <source src="../images/images.2/视频3.mp4" type="video/mp4">
+                    </video>
                 </div>
             </div>
+            <button class="carousel-control-prev" type="button" data-target="#carouselExampleCaptions" data-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-target="#carouselExampleCaptions" data-slide="next">
+                <span class="carousel-control-next-icon"></span>
+            </button>
         </div>
+    </div>
 
-        <!-- 经典展品：固定 4×2 两行四列排布 -->
-        <div class="dv2"><h3>经典展品</h3></div>
-        <div class="container gc">
-            <!-- 第一行 4个 -->
-            <div class="row row1">
-                <div class="col-3"><a href="" style="background-image: url(../images/images.2/zongmu2.png);"></a></div>
-                <div class="col-3"><a href="" style="background-image: url(../images/images.2/mianzhao.png);"></a></div>
-                <div class="col-3"><a href="" style="background-image: url(../images/images.2/lirenxiang.png);"></a></div>
-                <div class="col-3"><a href="../html/jj.html" target="_blank" style="background-image: url(../images/images.2/qingtongshenshu.png);"></a></div>
+    <!-- 要闻（已删除所有图片） -->
+    <div class="dv"><h3>要闻</h3></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <ul class="list">
+                    <li><a target="_blank" href="https://yangbo.cctv.com/2023/11/15/ARTIY73MXR3G9ZnVXnQb0lMV231115.shtml">走进古文明：三星堆的十件核心文物！</a></li>
+                    <li><a target="_blank" href="https://news.cnr.cn/native/gd/sz/20250621/t20250621_527223032.shtml">习语回响丨不断揭开三星堆的秘密</a></li>
+                    <li><a target="_blank" href="https://sichuan.scol.com.cn/ggxw/202307/58943629.html">总书记来到三星堆——"三星堆遗址考古成果在世界上是叫得响的"</a></li>
+                    <li><a target="_blank" href="https://m.thepaper.cn/baijiahao_26268070">专家分析三星堆青铜器如何铸造</a></li>
+                    <li><a target="_blank" href="https://www.ha.chinanews.com.cn/wap/hnjk/2022/0318/41610.shtml">何时形成 何时结束 从年代学看三星堆文明</a></li>
+                    <li><a target="_blank" href="https://www.sc.chinanews.com.cn/whty/2024-03-08/205447.html">三星堆文化瑰宝闪耀世界：探寻古蜀文化遗珍 实证中华文明多元一体</a></li>
+                    <li><a target="_blank" href="https://news.youth.cn/sz/202404/t20240415_15197010.htm">坚定文化自信 建设中华民族现代文明丨三星堆的文化瑰宝</a></li>
+                    <li><a target="_blank" href="https://art.rmlt.com.cn/2026/0127/746175.shtml">三星堆金沙文物齐聚国博，看古蜀文明"双星"闪耀</a></li>
+                    <li><a target="_blank" href="https://news.cnr.cn/native/gd/sz/20250623/t20250623_527226189.shtml">近镜头·习近平的文化足迹｜"期待着更长的中华文明的发现发掘"</a></li>
+                    <li><a target="_blank" href="https://www.qstheory.cn/qshyjx/2024-07/12/c_1130178563.htm">聆听数千年前文明的回响</a></li>
+                    <li><a target="_blank" href="https://m.gmw.cn/2024-10/16/content_1303872856.htm">三星堆青铜神树：古蜀先民"通天梦"的现实样本</a></li>
+                    <li><a target="_blank" href="https://epaper.scdaily.cn/shtml/scrb/20241030/1019192.html">在三星堆 看到中华文明多元一体</a></li>
+                    <li><a target="_blank" href="https://www.scge.gov.cn/html/website/outsite/sichuandangxiaobao/2024nian%20di6qi/di7ban%20lilunshiye1790940881453457410/zz1790953577271926785.html">三星堆蕴含的文明特征和文化意蕴</a></li>
+                </ul>
             </div>
-            <!-- 第二行 4个 -->
-            <div class="row row2 mt-3">
-                <div class="col-3"><a href="../html/tea.html" target="_blank" style="background-image: url(../images/images.2/taiyangxingqi.png);"></a></div>
-                <div class="col-3"><a href="../html/ci.html" target="_blank" style="background-image: url(../images/images.2/yuzhang.png);"></a></div>
-                <div class="col-3"><a href="../html/wri.html" target="_blank" style="background-image: url(../images/images.2/huangjinmianju.png);"></a></div>
-                <div class="col-3"><a href="" style="background-image: url(../images/images.2/jinzhang.png);"></a></div>
-            </div>
         </div>
+    </div>
 
-        <!-- 云朵 -->
-        <div>
-            <div class="cloud cl1"></div>
-            <div class="cloud cl2"></div>
-            <div class="cloud cl3"></div>
+    <!-- 经典展品：4×2 两行四列 -->
+    <div class="dv2"><h3>经典展品</h3></div>
+    <div class="container gc">
+        <div class="row row1">
+            <div class="col-3"><a href="" style="background-image: url(../images/images.2/zongmu2.png);"></a></div>
+            <div class="col-3"><a href="" style="background-image: url(../images/images.2/mianzhao.png);"></a></div>
+            <div class="col-3"><a href="" style="background-image: url(../images/images.2/lirenxiang.png);"></a></div>
+            <div class="col-3"><a href="../html/jj.html" target="_blank" style="background-image: url(../images/images.2/qingtongshenshu.png);"></a></div>
         </div>
-
-        <!-- 返回顶部 -->
-        <div class="back-to-top" id="backToTop">
-            <i class="fas fa-arrow-up"></i>
+        <div class="row row2 mt-3">
+            <div class="col-3"><a href="../html/tea.html" target="_blank" style="background-image: url(../images/images.2/taiyangxingqi.png);"></a></div>
+            <div class="col-3"><a href="../html/ci.html" target="_blank" style="background-image: url(../images/images.2/yuzhang.png);"></a></div>
+            <div class="col-3"><a href="../html/wri.html" target="_blank" style="background-image: url(../images/images.2/huangjinmianju.png);"></a></div>
+            <div class="col-3"><a href="" style="background-image: url(../images/images.2/jinzhang.png);"></a></div>
         </div>
+    </div>
 
+    <!-- 云朵 -->
+    <div>
+        <div class="cloud cl1"></div>
+        <div class="cloud cl2"></div>
+        <div class="cloud cl3"></div>
+    </div>
+
+    <!-- 返回顶部 -->
+    <div class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
     </div>
 
     <script>
