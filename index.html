@@ -113,9 +113,6 @@
         a {
             color: #D9D207 !important;
             text-decoration: none !important;
-            display: block; /* 修复跳转 */
-            width: 100%;
-            height: 100%;
         }
 
         body {
@@ -230,10 +227,14 @@
         }
 
         .row {
-            margin: 0 !important;
+            margin: 0 -5px !important;
+        }
+        .row > [class*="col-"] {
+            padding: 0 5px !important;
+            margin-bottom: 10px;
         }
 
-        /* 要闻列表 —— 修复跳转 */
+        /* 要闻列表 —— 修复跳转层级 */
         .list {
             background: #fff;
             padding: 10px;
@@ -248,6 +249,9 @@
         }
 
         .list li a {
+            display:block;
+            width:100%;
+            height:100%;
             font-size: 16px;
             color: #d1af74 !important;
             text-indent: 15px;
@@ -260,7 +264,7 @@
             font-weight: bold;
         }
 
-        /* 经典展品 —— 修复 hover 文字 */
+        /* 经典展品 4*2 布局样式 */
         .gc {
             background: transparent !important;
             padding: 0 !important;
@@ -269,8 +273,7 @@
 
         .gc .col-3 {
             height: 280px;
-            padding: 0 !important;
-            position: relative; /* 必须 */
+            position: relative;
         }
 
         .gc a {
@@ -286,7 +289,6 @@
             filter: blur(5px) brightness(0.4);
         }
 
-        /* 修复文字显示 */
         .gc .col-3::after {
             content: "";
             position: absolute;
@@ -348,7 +350,6 @@
             top: 1800px;
         }
 
-        /* 去除多余 Hills */
         .hill-l, .hill-r {
             display: none !important;
         }
@@ -413,7 +414,7 @@
             </div>
         </div>
 
-        <!-- 要闻 —— 链接已修复 -->
+        <!-- 要闻（链接已修复） -->
         <div class="dv"><h3>要闻</h3></div>
         <div class="container">
             <div class="row">
@@ -423,13 +424,13 @@
                         <li><a target="_blank" href="https://news.cnr.cn/native/gd/sz/20250621/t20250621_527223032.shtml">习语回响丨不断揭开三星堆的秘密</a></li>
                         <li><a target="_blank" href="https://sichuan.scol.com.cn/ggxw/202307/58943629.html">总书记来到三星堆——"三星堆遗址考古成果在世界上是叫得响的"</a></li>
                         <li><a target="_blank" href="https://m.thepaper.cn/baijiahao_26268070">专家分析三星堆青铜器如何铸造</a></li>
-                        <li><a target="_blank" href="https://www.ha.chinanews.com.cn/wap/hnjk/2022/0318/41610.shtml">何时形成 何时结束 从年代学看三星堆文明</a></li>
+                        <li><a target="_blank" href="https://www.ha.chinanews.com.cn/wap/hnk/2022/0318/41610.shtml">何时形成 何时结束 从年代学看三星堆文明</a></li>
                         <li><a target="_blank" href="https://www.sc.chinanews.com.cn/whty/2024-03-08/205447.html">三星堆文化瑰宝闪耀世界：探寻古蜀文化遗珍 实证中华文明多元一体</a></li>
                         <li><a target="_blank" href="https://news.youth.cn/sz/202404/t20240415_15197010.htm">坚定文化自信 建设中华民族现代文明丨三星堆的文化瑰宝</a></li>
                         <li><a target="_blank" href="https://art.rmlt.com.cn/2026/0127/746175.shtml">三星堆金沙文物齐聚国博，看古蜀文明"双星"闪耀</a></li>
                         <li><a target="_blank" href="https://news.cnr.cn/native/gd/sz/20250623/t20250623_527226189.shtml">近镜头·习近平的文化足迹｜"期待着更长的中华文明的发现发掘"</a></li>
                         <li><a target="_blank" href="https://www.qstheory.cn/qshyjx/2024-07/12/c_1130178563.htm">聆听数千年前文明的回响</a></li>
-                        <li><a target="_blank" href="https://m.gmw.cn/2024-10/16/content_1303872856.htm">三星堆青铜神树：古蜀先民"通天梦"的现实样本</a></li>
+                        <li><a target="_blank" href="https://m.gmw.cn/2024-10-16/content_1303872856.html">三星堆青铜神树：古蜀先民"通天梦"的现实样本</a></li>
                         <li><a target="_blank" href="https://epaper.scdaily.cn/shtml/scrb/20241030/1019192.html">在三星堆 看到中华文明多元一体</a></li>
                         <li><a target="_blank" href="https://www.scge.gov.cn/html/website/outsite/sichuandangxiaobao/2024nian%20di6qi/di7ban%20lilunshiye1790940881453457410/zz1790953577271926785.html">三星堆蕴含的文明特征和文化意蕴</a></li>
                     </ul>
@@ -443,16 +444,18 @@
             </div>
         </div>
 
-        <!-- 经典展品 —— hover 文字已修复 -->
+        <!-- 经典展品：固定 4×2 两行四列排布 -->
         <div class="dv2"><h3>经典展品</h3></div>
         <div class="container gc">
+            <!-- 第一行 4个 -->
             <div class="row row1">
                 <div class="col-3"><a href="" style="background-image: url(../images/images.2/zongmu2.png);"></a></div>
                 <div class="col-3"><a href="" style="background-image: url(../images/images.2/mianzhao.png);"></a></div>
                 <div class="col-3"><a href="" style="background-image: url(../images/images.2/lirenxiang.png);"></a></div>
                 <div class="col-3"><a href="../html/jj.html" target="_blank" style="background-image: url(../images/images.2/qingtongshenshu.png);"></a></div>
             </div>
-            <div class="row row2">
+            <!-- 第二行 4个 -->
+            <div class="row row2 mt-3">
                 <div class="col-3"><a href="../html/tea.html" target="_blank" style="background-image: url(../images/images.2/taiyangxingqi.png);"></a></div>
                 <div class="col-3"><a href="../html/ci.html" target="_blank" style="background-image: url(../images/images.2/yuzhang.png);"></a></div>
                 <div class="col-3"><a href="../html/wri.html" target="_blank" style="background-image: url(../images/images.2/huangjinmianju.png);"></a></div>
