@@ -1145,7 +1145,7 @@
             </div>
             <div class="video-modal-player">
                 <video id="modal-video" controls style="width: 100%; height: 100%;">
-                    <source id="modal-video-source" src="" type="video/mp4">
+                    <source id="modal-video-source" src="" type="web/mp4">
                     您的浏览器不支持视频播放。
                 </video>
             </div>
@@ -1164,27 +1164,27 @@
 
             // ---------- 文物数据（图片页用）- 已移除thumb属性，因为预览图已删除 ----------
             const artifacts = [
-                { title: "青铜纵目面具", desc: "青铜纵目面具高66厘米，宽138厘米，眼耳极度夸张，被人们誉为'千里眼'和'顺风耳'。一般认为，此面具与史书中有关蜀人始祖蚕丛'纵目'的记载相呼应，很有可能表现的就是古蜀人顶礼膜拜的祖先神——蚕丛。", img: "../images/images.2/zongmu2.png" },
-                { title: "青铜神树", desc: "三星堆出土的青铜树，印证了《山海经·大荒东经》的记载：汤谷上有扶木，一日方至，一日方出，皆载于乌。三星堆神树应是古代传说中扶桑、建木等神树的一种复合产物，其主要功能之一即为'通天'。", img: "../images/images.2/qingtongshenshu.png" },
-                { title: "黄金面具", desc: "三星堆黄金面具采用贴金工艺打造，金箔厚度仅0.2毫米，工艺精湛。作为古蜀最高等级祭祀礼器，面具象征祭祀者（国王/大祭司）的神权身份，用于祭祀中'以金为面，沟通神灵'。", img: "../images/images.2/mianzhao.jpg" },
-                { title: "青铜大立人", desc: "青铜大立人是三星堆出土最高的青铜人像，为古蜀祭祀主礼者化身，其身份为'国王兼大祭司'，是祭祀活动的核心主导者，印证了古蜀'政教合一'的社会结构。", img: "../images/images.2/立人像.png" },
-                { title: "玉璋", desc: "三星堆出土的玉璋为上古重要祭祀礼器，器身刻有龙纹、鸟纹等神异图案，是'通神'的核心载体，既是古蜀人祭祀山川日月、沟通人神的核心礼器，也是理解古蜀祭祀信仰的关键文物。", img: "../images/images.2/玉璋.png" },
-                { title: "金杖", desc: "三星堆出土的金杖实际上就是一句标志着王权、神权和经济社会财富垄断者权的权杖，为古蜀王国政权的最高象征物，杖身刻有鱼、鸟、人像等图案，具有重要的历史价值。", img: "../images/images.2/jinzhang.png" }
+                { title: "青铜纵目面具", desc: "青铜纵目面具高66厘米，宽138厘米，眼耳极度夸张，被人们誉为'千里眼'和'顺风耳'。一般认为，此面具与史书中有关蜀人始祖蚕丛'纵目'的记载相呼应，很有可能表现的就是古蜀人顶礼膜拜的祖先神——蚕丛。", img: "../web/zongmu2.png" },
+                { title: "青铜神树", desc: "三星堆出土的青铜树，印证了《山海经·大荒东经》的记载：汤谷上有扶木，一日方至，一日方出，皆载于乌。三星堆神树应是古代传说中扶桑、建木等神树的一种复合产物，其主要功能之一即为'通天'。", img: "../web/qingtongshenshu.png" },
+                { title: "黄金面具", desc: "三星堆黄金面具采用贴金工艺打造，金箔厚度仅0.2毫米，工艺精湛。作为古蜀最高等级祭祀礼器，面具象征祭祀者（国王/大祭司）的神权身份，用于祭祀中'以金为面，沟通神灵'。", img: "../web/mianzhao.jpg" },
+                { title: "青铜大立人", desc: "青铜大立人是三星堆出土最高的青铜人像，为古蜀祭祀主礼者化身，其身份为'国王兼大祭司'，是祭祀活动的核心主导者，印证了古蜀'政教合一'的社会结构。", img: "../web/立人像.png" },
+                { title: "玉璋", desc: "三星堆出土的玉璋为上古重要祭祀礼器，器身刻有龙纹、鸟纹等神异图案，是'通神'的核心载体，既是古蜀人祭祀山川日月、沟通人神的核心礼器，也是理解古蜀祭祀信仰的关键文物。", img: "../web/玉璋.png" },
+                { title: "金杖", desc: "三星堆出土的金杖实际上就是一句标志着王权、神权和经济社会财富垄断者权的权杖，为古蜀王国政权的最高象征物，杖身刻有鱼、鸟、人像等图案，具有重要的历史价值。", img: "../web/jinzhang.png" }
             ];
             let currentArtifactIndex = 0;
 
             // ---------- 视频数据 ----------
             const videos = [
-                { id: 1, title: "三星堆考古新发现：祭祀坑的秘密", description: "探索三星堆最新考古发现，解密六个新祭祀坑的发掘过程与重要文物，包括黄金面具、顶尊跪坐人像等惊世发现。", thumbnail: "../images/images.2/金面罩.jpg", duration: "42:58", views: "325万", videoUrl: "../images/video/1-1.mp4" },
-                { id: 2, title: "青铜神树：古蜀人的通天之梯", description: "深度解析三星堆青铜神树的制作工艺、文化内涵与宗教意义，探讨其与《山海经》中神树传说的关联。", thumbnail: "../images/images.2/qingtongshenshu.png", duration: "32:10", views: "189万", videoUrl: "../images/video/1-2.mp4" },
-                { id: 3, title: "三星堆青铜铸造技术揭秘", description: "通过科学实验和工艺复原，揭示三星堆青铜器高超的铸造技术，包括范铸法、分铸法、焊接技术等。", thumbnail: "../images/images.2/金权杖.jpg", duration: "4:44", views: "210万", videoUrl: "../images/video/1-3.mp4" },
-                { id: 4, title: "三星堆文字之谜：是否有文字系统？", description: "探讨三星堆符号的性质，分析刻划符号与图案，研究古蜀文明是否已发展出文字系统。", thumbnail: "../images/images.2/神权.png", duration: "8:03", views: "156万", videoUrl: "../images/video/1-4.mp4" },
-                { id: 5, title: "三星堆与中原商文化的关系", description: "比较三星堆与中原商文明的异同，探讨古蜀国与商王朝的文化交流、贸易往来与政治关系。", thumbnail: "../images/images.2/区域分布.png", duration: "4:53", views: "198万", videoUrl: "../images/video/2-1.mp4" },
-                { id: 6, title: "三星堆黄金制品的来源与工艺", description: "通过科技分析探索三星堆黄金的来源，复原金面具、金杖的制作工艺，揭示古蜀国的黄金加工技术。", thumbnail: "../images/images.2/huangjinmianju.png", duration: "30:32", views: "132万", videoUrl: "../images/video/2-2.mp4" },
-                { id: 7, title: "三星堆玉器：礼仪与权力", description: "分析三星堆玉器的种类、功能与象征意义，探讨玉器在古蜀国社会等级与祭祀活动中的作用。", thumbnail: "../images/images.2/yuzhang.png", duration: "34:45", views: "110万", videoUrl: "../images/video/2-3.mp4" },
-                { id: 8, title: "三星堆文明突然消失之谜", description: "探讨三星堆文明在公元前1100年左右突然衰落的原因，分析洪水、战争、迁徙等多种假说。", thumbnail: "../images/images.2/房子.JPG", duration: "11:57", views: "187万", videoUrl: "../images/video/2-4.mp4" },
-                { id: 9, title: "三星堆与金沙：古蜀文明的传承", description: "比较三星堆与金沙遗址的文物特征，探讨古蜀文明从三星堆向金沙的转移与演变过程。", thumbnail: "../images/images.2/青铜头.JPG", duration: "34:26", views: "176万", videoUrl: "../images/video/3-1.mp4" },
-                { id: 10, title: "三星堆的国际文化交流", description: "从象牙、海贝、黄金等文物出发，探索三星堆与东南亚、南亚甚至中亚地区的文化交流与贸易往来。", thumbnail: "../images/images.2/长图.png", duration: "6:12", views: "145万", videoUrl: "../images/video/3-2.mp4" }
+                { id: 1, title: "三星堆考古新发现：祭祀坑的秘密", description: "探索三星堆最新考古发现，解密六个新祭祀坑的发掘过程与重要文物，包括黄金面具、顶尊跪坐人像等惊世发现。", thumbnail: "../web/金面罩.jpg", duration: "42:58", views: "325万", videoUrl: "../images/video/1-1.mp4" },
+                { id: 2, title: "青铜神树：古蜀人的通天之梯", description: "深度解析三星堆青铜神树的制作工艺、文化内涵与宗教意义，探讨其与《山海经》中神树传说的关联。", thumbnail: "../web/qingtongshenshu.png", duration: "32:10", views: "189万", videoUrl: "../images/video/1-2.mp4" },
+                { id: 3, title: "三星堆青铜铸造技术揭秘", description: "通过科学实验和工艺复原，揭示三星堆青铜器高超的铸造技术，包括范铸法、分铸法、焊接技术等。", thumbnail: "../web/金权杖.jpg", duration: "4:44", views: "210万", videoUrl: "../images/video/1-3.mp4" },
+                { id: 4, title: "三星堆文字之谜：是否有文字系统？", description: "探讨三星堆符号的性质，分析刻划符号与图案，研究古蜀文明是否已发展出文字系统。", thumbnail: "../web/神权.png", duration: "8:03", views: "156万", videoUrl: "../images/video/1-4.mp4" },
+                { id: 5, title: "三星堆与中原商文化的关系", description: "比较三星堆与中原商文明的异同，探讨古蜀国与商王朝的文化交流、贸易往来与政治关系。", thumbnail: "../web/区域分布.png", duration: "4:53", views: "198万", videoUrl: "../images/video/2-1.mp4" },
+                { id: 6, title: "三星堆黄金制品的来源与工艺", description: "通过科技分析探索三星堆黄金的来源，复原金面具、金杖的制作工艺，揭示古蜀国的黄金加工技术。", thumbnail: "../web/huangjinmianju.png", duration: "30:32", views: "132万", videoUrl: "../images/video/2-2.mp4" },
+                { id: 7, title: "三星堆玉器：礼仪与权力", description: "分析三星堆玉器的种类、功能与象征意义，探讨玉器在古蜀国社会等级与祭祀活动中的作用。", thumbnail: "../web/yuzhang.png", duration: "34:45", views: "110万", videoUrl: "../images/video/2-3.mp4" },
+                { id: 8, title: "三星堆文明突然消失之谜", description: "探讨三星堆文明在公元前1100年左右突然衰落的原因，分析洪水、战争、迁徙等多种假说。", thumbnail: "../web/房子.JPG", duration: "11:57", views: "187万", videoUrl: "../images/video/2-4.mp4" },
+                { id: 9, title: "三星堆与金沙：古蜀文明的传承", description: "比较三星堆与金沙遗址的文物特征，探讨古蜀文明从三星堆向金沙的转移与演变过程。", thumbnail: "../web/青铜头.JPG", duration: "34:26", views: "176万", videoUrl: "../images/video/3-1.mp4" },
+                { id: 10, title: "三星堆的国际文化交流", description: "从象牙、海贝、黄金等文物出发，探索三星堆与东南亚、南亚甚至中亚地区的文化交流与贸易往来。", thumbnail: "../web/长图.png", duration: "6:12", views: "145万", videoUrl: "../images/video/3-2.mp4" }
             ];
 
             const videosPerPage = [4, 4, 2];
@@ -1202,7 +1202,7 @@
                     date: "2017年12月",
                     pages: 12,
 
-                    pdfUrl: "pdfs/成都平原中——晚全新世环境考古研究进展_黄明.pdf",  // 👈 已替换为相对路径
+                    pdfUrl: "web/成都平原中——晚全新世环境考古研究进展_黄明.pdf",  // 👈 已替换为相对路径
 
                 },
                 { id: 2, title: "考古，让人们真真切切触摸到中华文明的血脉", category: "文化比较", abstract: "通过比较三星堆与郑州商城、殷墟等商文化遗址的文物特征，分析古蜀文明与中原商文化的异同，探讨两者之间的文化交流、技术传播与政治关系。", author: "李华", authorTitle: "中国社会科学院考古研究所研究员", authorAvatar: "https://randomuser.me/api/portraits/women/44.jpg", date: "2024年2月28", pages: 24, citations: 0, pdfUrl: "#"},
