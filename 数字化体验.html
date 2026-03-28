@@ -35,10 +35,12 @@
             min-height: 100vh;
         }
 
+        /* ========== 核心修复：统一版心 最大宽度1140px 居中 ========== */
         .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
+            max-width: 1140px !important;
+            width: 100% !important;
+            margin: 0 auto !important;
+            padding: 0 20px !important;
         }
 
         .copper-texture {
@@ -94,6 +96,8 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            max-width: 1140px;
+            margin: 0 auto;
         }
 
         .main-nav-list {
@@ -153,6 +157,10 @@
             position: relative;
             overflow: hidden;
             margin-top: 60px;
+            max-width: 1140px;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 12px;
         }
 
         .hero::before {
@@ -210,6 +218,8 @@
 
         .core-showcase {
             padding: 100px 0;
+            max-width: 1140px;
+            margin: 0 auto;
         }
 
         .section-title {
@@ -242,6 +252,9 @@
             transition: all 0.3s;
             position: relative;
             overflow: hidden;
+            max-width: 1140px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .content-card::before {
@@ -290,6 +303,8 @@
         .page-header {
             text-align: center;
             padding: 100px 0 30px;
+            max-width: 1140px;
+            margin: 0 auto;
         }
 
         .page-title {
@@ -315,6 +330,9 @@
         .featured-content {
             padding: 80px 0;
             background: linear-gradient(to bottom, rgba(15, 46, 23, 0.8), rgba(15, 46, 23, 0.9));
+            max-width: 1140px;
+            margin: 0 auto;
+            border-radius: 12px;
         }
 
         .featured-grid {
@@ -322,6 +340,10 @@
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 30px;
             margin-top: 50px;
+            max-width: 1140px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 0 20px;
         }
 
         .featured-card {
@@ -401,6 +423,9 @@
             padding: 50px 0 20px;
             text-align: center;
             border-top: 2px solid rgba(212, 175, 55, 0.3);
+            max-width: 1140px;
+            margin: 0 auto;
+            border-radius: 12px 12px 0 0;
         }
 
         .footer-content {
@@ -408,6 +433,7 @@
             flex-wrap: wrap;
             justify-content: space-between;
             margin-bottom: 30px;
+            padding: 0 20px;
         }
 
         .footer-section {
@@ -488,6 +514,9 @@
             align-items: center;
             height: 500px;
             margin: 3rem 0;
+            max-width: 1140px;
+            margin-left: auto;
+            margin-right: auto;
         }
         .circle {
             width: 510px;
@@ -538,6 +567,9 @@
             text-align: center;
             margin-top: 2rem;
             padding: 0 2rem;
+            max-width: 1140px;
+            margin-left: auto;
+            margin-right: auto;
         }
         .artifact-title {
             font-size: 1.8rem;
@@ -618,6 +650,10 @@
             grid-template-columns: repeat(2, 1fr);
             gap: 2.5rem;
             margin: 2.5rem 0;
+            max-width: 1140px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 0 20px;
         }
         .video-item {
             background-color: #0f3226;
@@ -784,6 +820,9 @@
             gap: 1rem;
             margin-bottom: 3rem;
             flex-wrap: wrap;
+            max-width: 1140px;
+            margin-left: auto;
+            margin-right: auto;
         }
         .filter-btn {
             background-color: #0f3226;
@@ -804,6 +843,10 @@
             grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
             gap: 2.5rem;
             margin: 2.5rem 0;
+            max-width: 1140px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 0 20px;
         }
         .document-card {
             background-color: #0f3226;
@@ -1364,8 +1407,7 @@
                 const categories = ['all', '科技考古', '文化比较', '工艺技术', '宗教考古',  '文化交流'];
                 const categoryNames = {
                     'all': '全部', '科技考古': '科技考古', '文化比较': '文化比较', '工艺技术': '工艺技术',
-                    '宗教考古': '宗教考古',
-                    '文化交流': '文化交流'
+                    '宗教考古': '宗教考古', '文化交流': '文化交流'
                 };
                 categories.forEach(cat => {
                     const btn = document.createElement('button');
@@ -1469,6 +1511,5 @@
             init();
         });
     </script>
-</body
+</body>
 </html>
-
